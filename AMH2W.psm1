@@ -1,17 +1,22 @@
-# AMH2W.psm1 — Module Entrypoint
+# AMH2W.psm1 — Module Entry Point
+# All My Homies Handle Windows - PowerShell utility library
 
-# Determine module root
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+# Set the module root in an environment variable
+$script:ModuleRoot = $PSScriptRoot
 
-# 1) Dot-source every .ps1 under core\ (recursively)
-Get-ChildItem -Path (Join-Path $scriptDir 'core') `
-              -Filter '*.ps1' -File -Recurse |
-  ForEach-Object { . $_.FullName }
+# Load the core/ files first
+Write-Verbose "Loading core components..."
+Get-ChildItem -Path (Join-Path $script:ModuleRoot 'core') -Filter '*.ps1' | ForEach-Object {
+    . $_.FullName
+    Write-Verbose "Loaded core component: $($_.Name)"
+}
 
-# 2) Dot-source every .ps1 under all\ (recursively)
-Get-ChildItem -Path (Join-Path $scriptDir 'all') `
-              -Filter '*.ps1' -File -Recurse |
-  ForEach-Object { . $_.FullName }
+# Load the command chain files
+Write-Verbose "Loading command chain..."
+Get-ChildItem -Path (Join-Path $script:ModuleRoot 'all') -Filter '*.ps1' -Recurse | ForEach-Object {
+    . $_.FullName
+    Write-Verbose "Loaded command: $($_.Name)"
+}
 
-# 3) Export every function loaded
-Export-ModuleMember -Function *
+# Export the 'all' function and any other standalone functions
+Export-ModuleMember -Function all

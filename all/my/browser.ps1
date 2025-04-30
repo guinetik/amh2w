@@ -1,51 +1,30 @@
-# all/my/browser.ps1
-param(
-    [Parameter(Position = 0)]
-    [string]$Url,
+﻿# browser.ps1
+# Opens a URL in the default web browser
+
+function browser {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0, Mandatory = $true)]
+        [string]$Url
+    )
     
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$Arguments
-)
-
-$ErrorActionPreference = 'Stop'
-
-$Context = New-PipelineContext
-
-function browser() {
-    # Add http:// prefix if missing
-    if (-not ($Url -match "^https?://") -and -not ($Url -match "^www\.")) {
+    Write-Host "Opening browser: " -NoNewline -ForegroundColor Cyan
+    
+    # Check if URL has a scheme, add https:// if not
+    if (-not ($Url -match "^[a-z]+://")) {
+        Write-Host "Adding https:// prefix" -ForegroundColor Yellow
         $Url = "https://$Url"
-        Log info "Added https:// prefix to URL: $Url" $Context
     }
-    elseif ($Url -match "^www\.") {
-        $Url = "https://$Url"
-        Log info "Added https:// prefix to URL: $Url" $Context
+    
+    Write-Host $Url -ForegroundColor Green
+    
+    try {
+        # Open the URL in the default browser
+        Start-Process $Url
+        return $true
     }
-
-    # Open URL in default browser
-    Log info "Opening URL in default browser: $Url" $Context
-
-    $result = Invoke-Pipeline -Steps @(
-        {
-            try {
-                Start-Process $Url
-                return Ok "Browser launched with URL: $Url"
-            }
-            catch {
-                return Err "Failed to open URL in browser: $_"
-            }
-        }
-    ) -Context $Context
-
-    if ($result) {
-        Write-Host "✅ URL opened in default browser: $Url" -ForegroundColor Green
+    catch {
+        Write-Host "Error opening URL: $_" -ForegroundColor Red
+        return $false
     }
-
-    # Return result for pipeline
-    return Ok "URL opened in default browser: $Url"
-}
-
-# Validate URL
-if ($Url) {
-    browser
 }

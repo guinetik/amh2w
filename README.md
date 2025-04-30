@@ -21,7 +21,7 @@ cd AMH2W
 
 2. Run the setup script:
 ```powershell
-.\setup.ps1
+.\install.ps1
 ```
 
 3. Restart your PowerShell session or reload your profile:

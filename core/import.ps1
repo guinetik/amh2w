@@ -1,4 +1,4 @@
-# Script path resolution cache
+﻿# Script path resolution cache
 $script:scriptPathCache = @{}
 
 function Resolve-ScriptPath {
