@@ -1,175 +1,195 @@
-# AMH2W - All My Homies Handle Windows
+# AMH2W - All My Homies ~~Hate~~ Handle Windows
 
-A PowerShell utility library with a declarative command structure and Rust-like error handling.
+A minimal but expressive PowerShell utility library that lets you write commands like a sentence and treat errors like data.
 
-## Features
+---
 
-- **Command Chaining**: Use a natural language-like command structure
-- **Result Pattern**: Rust-inspired error handling with `Ok` and `Err` types
-- **Pipeline Execution**: Chain operations with proper error handling
-- **No Exceptions**: All operations return result objects instead of throwing exceptions
-- **Logging System**: Built-in logging functionality for debugging and monitoring
-- **Modular Core**: Core functionality separated into reusable components
+## ⚡ What It Does
 
-## Installation
+AMH2W is not just a meme—it's a shell DSL where every word maps to a namespace or action:
 
-1. Clone this repository:
+```powershell
+all my homies hate json tree "https://api.example.com/data"
+```
+
+That line? It parses JSON from a URL and prints it as a tree.
+
+Need system info?
+
+```powershell
+all my uptime
+```
+
+Install a CLI tool?
+
+```powershell
+all my homies install choco
+```
+
+Launch a browser?
+
+```powershell
+all my browser google.com
+```
+
+It's declarative, it's composable, it's readable, and it's built for scripting and debugging real-world Windows environments.
+
+---
+
+## 🧠 Conceptual Model: Namespaces as Grammar
+
+AMH2W was born out of two personal needs:
+
+1. **To organize the chaos** — Like many devs, I had a mess of random PowerShell scripts strewn across projects, downloads folders, and forgotten Notepad++ tabs. AMH2W gives them a home — a clean, reusable hierarchy that makes scripting feel good.
+2. **To rebel** — Against the tyranny of `Get-Verbosity`, `Set-Tedium`, `Invoke-Overkill`. PowerShell's default grammar is a bureaucratic fever dream. AMH2W throws that out and replaces it with something human: `all my homies hate windows`. Minimal, memetic, memorable.
+
+Yes, it’s ironic. Yes, it’s inspired by internet culture. But also — it works.
+
+
+Commands are structured like sentences. Each word is a layer of meaning:
+
+- **`all`** — The root of everything. This bootstraps the command grammar and resolves modules.
+- **`my`** — User-focused commands: uptime, shell access, browser launching.
+- **`homies`** — Extended utility layer. These are your tools, integrations, and contacts.
+- **`hate`** — The "adapter" that simplifies complexity: it makes things like JSON parsing or Windows telemetry easy to talk to.
+- **`windows`** — Everything Windows-related: telemetry, cleanup, versioning.
+- **`json`** — A power-tool for working with structured data interactively.
+
+You get a grammar tree like:
+
+```powershell
+all my homies hate json tree
+```
+Which breaks down into:
+- `all` — core
+- `my` — personal context
+- `homies` — utility toolkit
+- `hate` — adapter for simplified interaction
+- `json` — specific module (with `view`, `tree`, `table`, etc.)
+
+This isn’t just clever naming—it makes discoverability and chaining commands intuitive.
+
+---
+
+## 🎯 Features
+
+- **Natural command chaining** via nested namespaces like `all my homies`
+- **Result pattern** for `Ok`/`Err`-based error handling
+- **Built-in logging system** with severity levels
+- **Modular structure** for clean extensions
+- **Pipeline-aware execution** like `result | map { it }`
+- **UTF-8/BOM-safe** via tooling in `fix-encoding.ps1`
+
+---
+
+## 📦 Installation
+
 ```powershell
 git clone https://github.com/yourusername/AMH2W.git
 cd AMH2W
-```
-
-2. Run the setup script:
-```powershell
-.\install.ps1
-```
-
-3. Restart your PowerShell session or reload your profile:
-```powershell
+./install.ps1
 . $PROFILE
 ```
 
-## Usage
+---
 
-### Basic Usage
-
-The library uses a grammar oriented command structure:
+## 🚀 Example Usage
 
 ```powershell
-# Basic command chain
-all my homies
+all                             # Root entrypoint
+all my                         # User-level context
+all my clock start             # Start tracking uptime
+all my clock stop              # Stop tracking uptime
+all my uptime                  # Show system uptime
+all my files                   # List files in current directory
+all my shell                   # Open an interactive shell prompt
+all my browser google.com      # Launch the default browser to a URL
 
-# Access specific namespaces
-all my homies hate windows
-all my homies hate json
+all my homies                  # Utilities namespace
+all my homies fetch <url>      # Fetch JSON data from URL
+all my homies install choco    # Install Chocolatey
 
-# Utility commands
-all my clock start
-all my uptime
+all my homies hate windows     # Run Windows-related cleanup
+all my homies hate windows version # Show Windows version info
 
-# Fetch data
-all my homies fetch "https://fakestoreapi.com/products/1"
-```
-
-## Command Namespaces
-
-Commands are organized into namespaces which can be accessed using the grammar chain. I will try to explain conceptually where this idea came from.
-
-### ALL
-
-The `all` namespace is the root namespace and contains the core commands. So it contains everything.
-
-### MY
-
-The `my` namespace is the next level of commands. It contains commands that are specific to the user.
-
-### HOMIES
-
-The `homies` namespace is the next level of commands. It contains commands that are specific to tools, utilities and contacts.
-
-### HATE
-
-The `hate` namespace is the next level of commands. The idea is to make unwieldy commands easier to use.
-
-### WINDOWS
-
-The `windows` namespace is the next level of commands. It contains commands that are specific to Windows for optimization, cleanup, telemetry, etc.
-
-```powershell
-# Windows management
-all my homies hate windows
-
-# JSON operations
+# JSON Power Tools
+all my homies hate json view data.json
 all my homies hate json tree "https://jsonplaceholder.typicode.com/users"
-
-# System utilities
-all my clock start
-all my uptime
+all my homies hate json table "https://jsonplaceholder.typicode.com/users"
+all my homies hate json chart test.json month value
+all my homies hate json highlight '{"name":"John"}'
 ```
 
-### Available Commands
+---
 
-#### System Utilities
-- `all my clock start`: Start system clock monitoring
-- `all my uptime`: Check system uptime
+## 🧱 Architecture
 
-#### Data Operations
-- `all my homies fetch [url]`: Fetch data from a URL
-- `all my homies hate json tree [url]`: Display JSON data in a tree structure
+- `core/`: Logging, result types, parser, pipeline support
+- `all/`: All commands start here
+- `all/my/`: User-centric tools (`clock`, `uptime`, `files`, `shell`, etc)
+- `all/my/homies/`: Utilities, downloaders, nested namespaces
+- `hate/`: Verbosity-simplifying adapter (e.g. `json`, `windows`)
+- `install/`: Installers like `choco`
 
-#### Windows Management
-- `all my homies hate windows`: Access Windows management commands
+---
 
-## Project Structure
-
-The library uses a modular structure with core functionality and command implementations:
+## 📁 Example Structure
 
 ```
-├───core/                # Core functionality
-│   ├───import.ps1       # Module imports and initialization
-│   ├───command.ps1      # Command parsing and execution
-│   ├───pipeline.ps1     # Pipeline execution logic
-│   ├───result.ps1       # Result type implementation
-│   └───log.ps1          # Logging system
-│
-└───all/                 # Command implementations
-    │   all.ps1
-    └───my/
-        │   my.ps1
-        └───homies/
-            │   homies.ps1
-            └───hate/
-                │   hate.ps1
-                └───windows/
-                        windows.ps1
+all/
+  my/
+    clock.ps1
+    uptime.ps1
+    browser.ps1
+    files.ps1
+    shell.ps1
+    homies/
+      hate/
+        json.ps1
+        windows/
+          version.ps1
+      install/
+        choco.ps1
+core/
+  result.ps1
+  pipeline.ps1
+  log.ps1
+  command.ps1
+  dispatch.ps1
+  import.ps1
 ```
 
-## Development and Extension
+---
 
-To add a new command:
+## 🧠 Writing Your Own Commands
 
-1. If it fits within an existing namespace, add a new `.ps1` file in the appropriate directory
-2. If you need a new namespace, create a new folder and corresponding `.ps1` file
-3. Ensure your command uses the Result pattern for error handling
-4. Use the logging system for debugging and monitoring
+You define a `.ps1` in the appropriate namespace folder (like `all/my/homies/hello.ps1`) and export a function matching its path. Your function should:
 
-## Extending with your commands
-*TODO*
-The user should be able to call `all -Create` and it should prompt them for the command details like the name and the location of the ps1 file to be copied into the `all` namespace. Similarly, all the other namespaces should have the same functionality. This should be able to be done non-interactively with parameters. Ex: `all my homies -Create "my new command" "C:\path\to\new\command.ps1"` or even `all my homies -Create "say hello" "echo 'Hello, world!'"` and a new command should be created for `all my homies say hello` that will execute the command `echo 'Hello, world!'`.
-*TODO*
+- Return `Ok` or `Err` objects
+- Use `Log-Info`, `Log-Warning`, or `Log-Error`
+- Respect pipeline input if possible
 
-## Error Handling
-
-All functions use the Result pattern with `Ok` and `Err` return types:
+> 🚧 Work-in-progress CLI scaffolder:
 
 ```powershell
-function MyFunction {
-    # Success case
-    return Ok "Operation succeeded"
-    
-    # Error case
-    return Err "Something went wrong"
-    
-    # Optional error (won't halt execution)
-    return Err -Msg "Non-critical error" -Optional $true
-}
+all -Create "say hello" "echo 'Hello World'"
 ```
 
-## Logging
+---
 
-The library includes a built-in logging system:
+## ❌ Exception-Free Zone
+
+No `throw`. Only structured `Result` objects.
 
 ```powershell
-# Log an informational message
-Log-Info "Operation started"
-
-# Log a warning
-Log-Warning "Potential issue detected"
-
-# Log an error
-Log-Error "Operation failed"
+return Ok -Value "done"
+return Err "failed"
+return Err -Msg "optional warning" -Optional $true
 ```
 
-## License
+---
 
-MIT License - See LICENSE file for details
+## 🧾 License
+
+MIT. Copy it, fork it, customize it.
+
