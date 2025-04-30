@@ -1,20 +1,83 @@
 ﻿# Call all
-& all
+try {
+    & all
+} catch {
+    Write-Host "Error in 'all' command: $_" -ForegroundColor Red
+}
+
 # Call my
-& all my
+try {
+    & all my
+} catch {
+    Write-Host "Error in 'all my' command: $_" -ForegroundColor Red
+}
+
 # Call homies
-& all my homies
+try {
+    & all my homies
+} catch {
+    Write-Host "Error in 'all my homies' command: $_" -ForegroundColor Red
+}
+
 # Call hate
-& all my homies hate
+try {
+    & all my homies hate
+} catch {
+    Write-Host "Error in 'all my homies hate' command: $_" -ForegroundColor Red
+}
+
 # Call windows
-& all my homies hate windows
+try {
+    & all my homies hate windows
+} catch {
+    Write-Host "Error in 'all my homies hate windows' command: $_" -ForegroundColor Red
+}
 
 # Call clock
-& all my clock start
-# Call uptime
-& all my uptime
-# Call json
-all my homies hate json tree "https://jsonplaceholder.typicode.com/users"
-# Call 
-# Call fetch
-& all my homies fetch "https://fakestoreapi.com/products/1"
+try {
+    & all my clock start
+} catch {
+    Write-Host "Error in 'all my clock start' command: $_" -ForegroundColor Red
+}
+
+# Call browser
+try {
+    & all my browser google.com
+} catch {
+    Write-Host "Error in 'all my browser google.com' command: $_" -ForegroundColor Red
+}
+
+# call files
+try {
+    & all my files
+} catch {
+    Write-Host "Error in 'all my files' command: $_" -ForegroundColor Red
+}
+
+# call all my shell
+try {
+    & all my shell
+} catch {
+    Write-Host "Error in 'all my shell' command: $_" -ForegroundColor Red
+}
+
+# call all my homies install
+try {
+    & all my homies install
+} catch {
+    Write-Host "Error in 'all my homies install' command: $_" -ForegroundColor Red
+}
+
+# call all my homies install choco
+try {
+    & all my homies install choco
+} catch {
+    Write-Host "Error in 'all my homies install choco' command: $_" -ForegroundColor Red
+}
+
+# stop clock
+try {
+    & all my clock stop
+} catch {
+    Write-Host "Error in 'all my clock stop' command: $_" -ForegroundColor Red
+}

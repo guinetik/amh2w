@@ -1,13 +1,25 @@
 ﻿# core/pipeline.ps1
 # Enhanced pipeline execution system for AMH2W
 
+# Global pipeline context
+$global:AMH2W_PipelineContext = @{
+    Prompt = $true                      # Prompt on optional errors
+    Verbose = $false                    # Verbose output
+    ContinueOnError = $false            # Continue on optional errors
+    LogConfig = @{                      # Logging configuration
+        Colors = $global:AMH2W_LogConfig.Colors
+        Prefixes = $global:AMH2W_LogConfig.Prefixes
+    }
+    Data = @{}                          # Shared data between steps
+    History = @()                       # Command execution history
+    CurrentCommand = ""                 # Current command being executed
+    CurrentNamespace = ""               # Current namespace
+}
+
 function New-PipelineContext {
     param(
         [Parameter(Mandatory=$false)]
         [bool]$PromptOnOptionalError = $true,
-        
-        [Parameter(Mandatory=$false)]
-        [bool]$Verbose = $false,
         
         [Parameter(Mandatory=$false)]
         [bool]$ContinueOnError = $false,
@@ -27,13 +39,98 @@ function New-PipelineContext {
         }
     }
 
-    return @{
-        Prompt = $PromptOnOptionalError
-        Verbose = $Verbose
-        ContinueOnError = $ContinueOnError
-        LogConfig = $LogConfig
-        Data = $Data
-        History = @()  # Store execution history
+    # Update the global context
+    $global:AMH2W_PipelineContext.Prompt = $PromptOnOptionalError
+    $global:AMH2W_PipelineContext.ContinueOnError = $ContinueOnError
+    $global:AMH2W_PipelineContext.LogConfig = $LogConfig
+    $global:AMH2W_PipelineContext.Data = $Data
+    
+    # Return the global context (for backward compatibility)
+    return $global:AMH2W_PipelineContext
+}
+
+function Get-PipelineContext {
+    # Return the global pipeline context
+    return $global:AMH2W_PipelineContext
+}
+
+function Set-PipelineVerbose {
+    param([bool]$Verbose)
+    $global:AMH2W_PipelineContext.Verbose = $Verbose
+}
+
+function Set-CurrentCommand {
+    param(
+        [string]$Command,
+        [string]$Namespace
+    )
+    
+    $global:AMH2W_PipelineContext.CurrentCommand = $Command
+    $global:AMH2W_PipelineContext.CurrentNamespace = $Namespace
+    
+    Log-Debug "Set current command: $Command in namespace: $Namespace"
+}
+
+function Invoke-CommandWithErrorHandling {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ScriptBlock]$CommandBlock,
+        
+        [Parameter(Mandatory=$false)]
+        [string]$CommandName = "Command",
+        
+        [Parameter(Mandatory=$false)]
+        [object[]]$Arguments = @()
+    )
+    
+    $startTime = Get-Date
+    
+    try {
+        Log-Debug "Executing $CommandName"
+        $result = & $CommandBlock @Arguments
+        
+        # Ensure result is in the correct format (Ok/Err)
+        if ($null -eq $result) {
+            $result = Ok -Value $null -Message "$CommandName completed successfully"
+        }
+        elseif (-not ($result -is [Hashtable]) -or (-not $result.ContainsKey('ok'))) {
+            # Wrap non-Ok/Err results in an Ok
+            $result = Ok -Value $result -Message "$CommandName completed successfully"
+        }
+        
+        # Record execution in history
+        $executionRecord = @{
+            Command = $CommandName
+            StartTime = $startTime
+            EndTime = Get-Date
+            Duration = ((Get-Date) - $startTime).TotalMilliseconds
+            Success = $result.ok
+            Result = $result
+        }
+        $global:AMH2W_PipelineContext.History += $executionRecord
+        
+        return $result
+    }
+    catch {
+        # Handle unexpected exceptions
+        $errorMessage = "Error in $CommandName : $_"
+        Log-Error $errorMessage
+        
+        # Create error result
+        $errorResult = Err -Message $errorMessage
+        
+        # Record in history
+        $executionRecord = @{
+            Command = $CommandName
+            StartTime = $startTime
+            EndTime = Get-Date
+            Duration = ((Get-Date) - $startTime).TotalMilliseconds
+            Success = $false
+            Result = $errorResult
+        }
+        $global:AMH2W_PipelineContext.History += $executionRecord
+        
+        return $errorResult
     }
 }
 
@@ -49,9 +146,9 @@ function Invoke-Pipeline {
         [string]$PipelineName = "Pipeline"
     )
 
-    # Create default context if none provided
+    # Use global context if none provided
     if ($null -eq $Context) {
-        $Context = New-PipelineContext
+        $Context = $global:AMH2W_PipelineContext
     }
 
     $stepNumber = 0
@@ -179,9 +276,13 @@ function Invoke-Pipeline {
 
 function Get-PipelineStats {
     param(
-        [Parameter(Mandatory=$true)]
-        [hashtable]$Context
+        [Parameter(Mandatory=$false)]
+        [hashtable]$Context = $null
     )
+    
+    if ($null -eq $Context) {
+        $Context = $global:AMH2W_PipelineContext
+    }
     
     if (-not $Context.History -or $Context.History.Count -eq 0) {
         return @{
@@ -206,3 +307,6 @@ function Get-PipelineStats {
         AverageDuration = $avgDuration
     }
 }
+
+# Initialize the global context
+New-PipelineContext | Out-Null
