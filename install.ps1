@@ -67,7 +67,7 @@ New-ModuleManifest -Path $manifestPath `
     -Author "AMH2W Contributors" `
     -Description "All My Homies Handle Windows - PowerShell utility library" `
     -PowerShellVersion "5.1" `
-    -FunctionsToExport @("all", "my", "homies", "hate", "windows", "version")
+    -FunctionsToExport @("all", "🤓")
 
 Write-Host "`nInstallation complete." -ForegroundColor Green
 Write-Host "To use the module, restart PowerShell or run: " -NoNewline

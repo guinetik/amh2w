@@ -1,83 +1,237 @@
-﻿# Call all
-try {
-    & all
-} catch {
-    Write-Host "Error in 'all' command: $_" -ForegroundColor Red
+﻿#tests stuff
+#TODO: add pester later
+param(
+    [Parameter(Position=0)]
+    [string]$TestGroup = "all"
+)
+
+# Global test results tracking
+$global:TestResults = @{
+    Passed = @()
+    Failed = @()
 }
 
-# Call my
-try {
-    & all my
-} catch {
-    Write-Host "Error in 'all my' command: $_" -ForegroundColor Red
+# Function to handle errors consistently
+function Write-Error {
+    param(
+        [string]$Command,
+        [string]$Error
+    )
+    Write-Host "Error in '$Command' command: $Error" -ForegroundColor Red
+    $global:TestResults.Failed += $Command
 }
 
-# Call homies
-try {
-    & all my homies
-} catch {
-    Write-Host "Error in 'all my homies' command: $_" -ForegroundColor Red
+# Function to track successful tests
+function Write-Success {
+    param(
+        [string]$Command
+    )
+    $global:TestResults.Passed += $Command
 }
 
-# Call hate
-try {
-    & all my homies hate
-} catch {
-    Write-Host "Error in 'all my homies hate' command: $_" -ForegroundColor Red
+# Test functions
+function Test-All {
+    try {
+        & all
+        Write-Success "all"
+    } catch {
+        Write-Error "all" $_
+    }
 }
 
-# Call windows
-try {
-    & all my homies hate windows
-} catch {
-    Write-Host "Error in 'all my homies hate windows' command: $_" -ForegroundColor Red
+function Test-My {
+    try {
+        & all my
+        Write-Success "all my"
+    } catch {
+        Write-Error "all my" $_
+    }
 }
 
-# Call clock
-try {
-    & all my clock start
-} catch {
-    Write-Host "Error in 'all my clock start' command: $_" -ForegroundColor Red
+function Test-Homies {
+    try {
+        & all my homies
+        Write-Success "all my homies"
+    } catch {
+        Write-Error "all my homies" $_
+    }
 }
 
-# Call browser
-try {
-    & all my browser google.com
-} catch {
-    Write-Host "Error in 'all my browser google.com' command: $_" -ForegroundColor Red
+function Test-Hate {
+    try {
+        & all my homies hate
+        Write-Success "all my homies hate"
+    } catch {
+        Write-Error "all my homies hate" $_
+    }
 }
 
-# call files
-try {
-    & all my files
-} catch {
-    Write-Host "Error in 'all my files' command: $_" -ForegroundColor Red
+function Test-Windows {
+    try {
+        & all my homies hate windows
+        Write-Success "all my homies hate windows"
+    } catch {
+        Write-Error "all my homies hate windows" $_
+    }
 }
 
-# call all my shell
-try {
-    & all my shell
-} catch {
-    Write-Host "Error in 'all my shell' command: $_" -ForegroundColor Red
+function Test-Clock {
+    try {
+        & all my clock start
+        Write-Success "all my clock start"
+    } catch {
+        Write-Error "all my clock start" $_
+    }
+    
+    try {
+        & all my clock stop
+        Write-Success "all my clock stop"
+    } catch {
+        Write-Error "all my clock stop" $_
+    }
 }
 
-# call all my homies install
-try {
-    & all my homies install
-} catch {
-    Write-Host "Error in 'all my homies install' command: $_" -ForegroundColor Red
+function Test-Browser {
+    try {
+        & all my browser google.com
+        Write-Success "all my browser google.com"
+    } catch {
+        Write-Error "all my browser google.com" $_
+    }
 }
 
-# call all my homies install choco
-try {
-    & all my homies install choco
-} catch {
-    Write-Host "Error in 'all my homies install choco' command: $_" -ForegroundColor Red
+function Test-Files {
+    try {
+        & all my files
+        Write-Success "all my files"
+    } catch {
+        Write-Error "all my files" $_
+    }
 }
 
-# stop clock
-try {
-    & all my clock stop
-} catch {
-    Write-Host "Error in 'all my clock stop' command: $_" -ForegroundColor Red
+function Test-Shell {
+    try {
+        & all my shell
+        Write-Success "all my shell"
+    } catch {
+        Write-Error "all my shell" $_
+    }
 }
+
+function Test-Install {
+    try {
+        & all my homies install
+        Write-Success "all my homies install"
+    } catch {
+        Write-Error "all my homies install" $_
+    }
+    
+    try {
+        & all my homies install choco
+        Write-Success "all my homies install choco"
+    } catch {
+        Write-Error "all my homies install choco" $_
+    }
+}
+
+function Test-Json {
+    try {
+        & all my homies hate json
+        Write-Success "all my homies hate json"
+    } catch {
+        Write-Error "all my homies hate json" $_
+    }
+    
+    try {
+        & all my homies hate json view "https://fakestoreapi.com/products/1"
+        Write-Success "all my homies hate json view"
+    } catch {
+        Write-Error "all my homies hate json view" $_
+    }
+    
+    try {
+        & all my homies hate json tree "https://jsonplaceholder.typicode.com/users"
+        Write-Success "all my homies hate json tree"
+    } catch {
+        Write-Error "all my homies hate json tree" $_
+    }
+    
+    try {
+        & all my homies hate json table "https://jsonplaceholder.typicode.com/users"
+        Write-Success "all my homies hate json table"
+    } catch {
+        Write-Error "all my homies hate json table" $_
+    }
+    
+    try {
+        & all my homies hate json highlight '{"name":"John","age":30,"city":"New York"}'
+        Write-Success "all my homies hate json highlight"
+    } catch {
+        Write-Error "all my homies hate json highlight" $_
+    }
+    
+    try {
+        & all my homies hate json chart '{   "sales": [     { "month": "January", "value": 120 },     { "month": "February", "value": 150 },     { "month": "March", "value": 200 },     { "month": "April", "value": 180 },     { "month": "May", "value": 250 }   ] }' "month" "value"
+        Write-Success "all my homies hate json chart"
+    } catch {
+        Write-Error "all my homies hate json chart" $_
+    }
+}
+
+# Main test execution
+switch ($TestGroup.ToLower()) {
+    "all" {
+        Test-All
+        Test-My
+        Test-Homies
+        Test-Hate
+        Test-Windows
+        Test-Clock
+        Test-Browser
+        Test-Files
+        Test-Shell
+        Test-Install
+        Test-Json
+    }
+    "my" {
+        Test-Files
+        Test-Shell
+        Test-Browser
+    }
+    "clock" {
+        Test-Clock
+    }
+    "json" {
+        Test-Json
+    }
+    "install" {
+        Test-Install
+    }
+    default {
+        Write-Host "Unknown test group: $TestGroup" -ForegroundColor Yellow
+        Write-Host "Available test groups: all, my, clock, json, install" -ForegroundColor Yellow
+    }
+}
+
+# Display test results summary
+Write-Host "`nTest Results Summary:" -ForegroundColor Cyan
+Write-Host "==================" -ForegroundColor Cyan
+Write-Host "Total Tests Run: $($global:TestResults.Passed.Count + $global:TestResults.Failed.Count)" -ForegroundColor White
+Write-Host "Passed: $($global:TestResults.Passed.Count)" -ForegroundColor Green
+Write-Host "Failed: $($global:TestResults.Failed.Count)" -ForegroundColor Red
+
+if ($global:TestResults.Failed.Count -gt 0) {
+    Write-Host "`nFailed Tests:" -ForegroundColor Red
+    $global:TestResults.Failed | ForEach-Object {
+        Write-Host "- $_" -ForegroundColor Red
+    }
+}
+
+if ($global:TestResults.Passed.Count -gt 0) {
+    Write-Host "`nPassed Tests:" -ForegroundColor Green
+    $global:TestResults.Passed | ForEach-Object {
+        Write-Host "- $_" -ForegroundColor Green
+    }
+}
+
+#https://fakestoreapi.com/products/1
