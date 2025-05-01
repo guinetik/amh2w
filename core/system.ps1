@@ -102,10 +102,3 @@ function Invoke-Elevate {
         Write-Error "Failed to elevate command: $_"
     }
 }
-
-# Add aliases for easier use
-Set-Alias -Name isAdmin -Value Test-IsAdmin
-Set-Alias -Name elevate -Value Invoke-Elevate
-
-# Export the functions
-Export-ModuleMember -Function Test-IsAdmin, Invoke-Elevate -Alias isAdmin, elevate
