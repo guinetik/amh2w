@@ -1,8 +1,8 @@
-﻿function hate {
+﻿function hardware {
     [CmdletBinding()]
     param(
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-    return namespace "hate" "all my homies hate" 
+    return namespace "hardware" "all my hardware" 
 }
