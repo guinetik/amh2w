@@ -36,12 +36,12 @@ It's declarative, it's composable, it's readable, and it's built for scripting a
 
 ---
 
-## 🧠 Conceptual Model: Namespaces as Grammar
+## 🧠 Conceptual Model: Commands as Grammar
 
 AMH2W was born out of two personal needs:
 
 1. **To organize the chaos** — Like many devs, I had a mess of random PowerShell scripts strewn across projects, downloads folders, and forgotten Notepad++ tabs. AMH2W gives them a home — a clean, reusable hierarchy that makes scripting feel good.
-2. **To rebel** — Against the tyranny of `Get-Verbosity`, `Set-Tedium`, `Invoke-Overkill`. PowerShell's default grammar is a bureaucratic fever dream. AMH2W throws that out and replaces it with something human: `all my homies hate windows`. Minimal, memetic, memorable.
+2. **To rebel** — Against the **tyranny** of `Get-Verbosity`, `Set-Tedium`, `Invoke-Overkill`. PowerShell's default grammar is a bureaucratic *Orwellian* nightmare. AMH2W throws that out and replaces it with something human: `all my homies hate windows`. Minimal, memetic, memorable.
 
 Yes, it's ironic. Yes, it's inspired by internet culture. But also — it works.
 
@@ -116,6 +116,36 @@ all my homies hate windows version  # Show Windows version info
 ## 🧑 Personal Tools
 
 AMH2W provides personal productivity and system management tools:
+
+### 📋 Clipboard Management
+
+```powershell
+# Copy text to clipboard
+all my clip copi "Hello World"
+# Paste from clipboard
+all my clip paste       # This will return a value
+# To output the value to the console, do:
+(all my clip paste).value
+# View clipboard history
+all my clip clipboard
+# Clear clipboard history
+all my clip clipboard clear
+# Get specific item from history (index 2)
+# This will move the item to your current window's clipboard
+all my clip clipboard get 2
+# Count items in history
+all my clip clipboard count
+# Pipeline example
+"Text to copy" | all my clip copy
+```
+
+#### Features:
+- Copy text to clipboard
+- Paste from clipboard
+- View clipboard history
+- Clear clipboard history
+- Get specific item from history
+- Count items in history
 
 ### ⏱️ Time Management
 ```powershell

@@ -62,6 +62,77 @@ Log-Error "❌ It broke!"
 
 Remember: The goal is to make Windows operations feel like natural language while secretly being a powerful scripting toolkit. Keep it memetic, keep it functional!
 
+### 📋 Clipboard Module Notes
+Location: `all/my/clip/`
+
+**Key Learnings:**
+1. **Global State Pattern**: Use `$global:` variables for persistent state across sessions
+2. **History Management**: Max 50 items, newest first, with preview truncation
+3. **Pipeline Support**: Copy function handles both arguments and pipeline input
+4. **Pattern Breaking**: `paste.ps1` deliberately breaks Result pattern (direct output + exit code)
+
+**Implementation Details:**
+- `clipboard.ps1`: History management with Add-ClipboardHistory helper function
+- `copy.ps1`: Uses Set-Clipboard and automatically adds to history
+- `paste.ps1`: Direct output with exit codes (0 for success, 1 for error)
+
+**Code Patterns:**
+```powershell
+# Global variable initialization
+if (-not (Test-Path variable:global:AMH2W_VARIABLE)) {
+    $global:AMH2W_VARIABLE = @()
+}
+
+# Pipeline input handling in copy
+if ($input) {
+    $pipelineContent = @()
+    $input | ForEach-Object { $pipelineContent += $_ }
+    $content = $pipelineContent -join "`n"
+}
+
+# Preview truncation pattern
+$preview = if ($text.Length -gt 50) { 
+    "$($text.Substring(0, 47))..." 
+} else { 
+    $text 
+}
+```
+
+### 🎯 Module Creation Checklist
+When creating a new module under `all/my/[namespace]`:
+1. Create the namespace folder
+2. Create the main `[namespace].ps1` file with routing function
+3. Add individual command files (e.g., `copy.ps1`, `paste.ps1`)
+4. If using global state, initialize it properly with existence checks
+5. Export functions explicitly with `Export-ModuleMember`
+6. Test pipeline support where appropriate
+7. Consider if any commands need to break the Result pattern (like `paste`)
+
+### 🎨 UI/UX Patterns
+- Use emojis in log messages (📋 📊 ✅ ❌ 🧹)
+- Provide previews for long content (truncate at ~50 chars)
+- Use colored output for different message types:
+  - `Yellow` for headers/actions
+  - `Cyan` for content/data
+  - `Green` for success
+  - `Red` for errors
+- Include usage examples in error messages
+
+
+### 🔒 Elevation
+
+The framework already has elevation logic in `core/elevation.ps1`. Any script that needs elevation should self check and  use the `Invoke-Elevate` function passing its own command as the first argument then the rest of the arguments. Example:
+
+```powershell
+    # Elevate if needed
+    if (-not (Test-IsAdmin)) {
+        Invoke-Elevate -Command "all my homies install linux '$DistroName'" -Description "Install Linux WSL Distro" -Prompt $true
+        return
+    }
+```
+
+Remember: Keep the meme spirit alive while building genuinely useful tools! 🚀
+
 ---
 
 # AMH2W Library Overview
