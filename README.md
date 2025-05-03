@@ -113,6 +113,77 @@ all my homies hate windows version  # Show Windows version info
 ```
 ---
 
+## 🧑 Personal Tools
+
+AMH2W provides personal productivity and system management tools:
+
+### ⏱️ Time Management
+```powershell
+all my clock start               # Start a timer
+all my clock stop                # Stop the timer and show elapsed time
+all my clock status              # Check timer status
+all my uptime                    # Show system uptime
+```
+
+### 🖥️ Terminal & Shell
+```powershell
+all my terminal "ls"             # Open command in new terminal
+all my terminal "ls" -Admin      # Open command as admin
+all my terminal "ls" "My Title"  # Open with custom title
+all my shell                     # Open interactive shell
+```
+
+### 📍 Location & System
+```powershell
+all my location                  # Show current location from IP
+all my files                     # Open file explorer
+all my browser google.com        # Open URL in default browser
+all my npp file.txt              # Open file in Notepad++
+all my edit file.txt             # Open file in default editor
+```
+
+### 📊 System Information
+```powershell
+all my psconfig                 # Show PowerShell configuration
+all my historyexport            # Export command history
+all my apps                     # List installed applications
+```
+
+### 📂 Folder Navigation
+```powershell
+all my folders downloads        # Navigate to Downloads folder
+all my folders docs             # Navigate to Documents folder
+all my folders desktop          # Navigate to Desktop folder
+all my folders ssh              # Navigate to SSH config folder
+```
+
+---
+
+## 💻 Hardware Management
+
+AMH2W provides detailed hardware information and management tools:
+
+### 🧠 CPU & Memory
+```powershell
+all my hardware cpu               # Show CPU information and temperature
+all my hardware ram               # Display RAM information
+all my hardware power             # Show power/battery status
+```
+
+### 💾 Storage & Devices
+```powershell
+all my hardware power             # Display power report
+all my hardware storage           # List storage devices
+all my hardware smart             # Display SMART status
+all my hardware gpu               # Display GPU information
+all my hardware motherboard       # Display motherboard details
+all my hardware bios              # Display BIOS information
+all my hardware bluetooth         # Display Bluetooth devices
+```
+
+---
+
+
 ## 🌐 Network Management
 
 AMH2W provides comprehensive network diagnostic and management tools:
@@ -144,29 +215,6 @@ all my network dns set 1.1.1.1    # Set DNS server
 
 ---
 
-## 💻 Hardware Management
-
-AMH2W provides detailed hardware information and management tools:
-
-### 🧠 CPU & Memory
-```powershell
-all my hardware cpu               # Show CPU information and temperature
-all my hardware ram               # Display RAM information
-all my hardware power             # Show power/battery status
-```
-
-### 💾 Storage & Devices
-```powershell
-all my hardware power             # Display power report
-all my hardware storage           # List storage devices
-all my hardware smart             # Display SMART status
-all my hardware gpu               # Display GPU information
-all my hardware motherboard       # Display motherboard details
-all my hardware bios              # Display BIOS information
-all my hardware bluetooth         # Display Bluetooth devices
-```
-
----
 
 ## 🪟 Windows Management Features
 
@@ -206,6 +254,77 @@ Key features include:
 
 ---
 
+
+
+## 📦 Package & System Installation
+
+AMH2W provides tools for managing software packages and system installations:
+
+### 📦 Package Managers
+```powershell
+all my homies install chocolatey  # Install Chocolatey package manager
+all my homies install scoop      # Install Scoop package manager
+```
+
+### 🐧 Linux & Development
+```powershell
+all my homies install linux      # Install WSL with Ubuntu
+all my homies install distro     # Install specific WSL distro
+all my homies install nvchad     # Install NvChad (Neovim config)
+all my homies install jabba      # Install Java version manager
+```
+
+---
+
+## 🔐 Cryptographic Tools
+
+AMH2W provides cryptographic and security utilities:
+
+### 🔒 Hashing & Encryption
+```powershell
+all my homies crypto hash "text" md5      # Generate MD5 hash
+all my homies crypto hash "text" sha256   # Generate SHA-256 hash
+all my homies crypto rot13 in "text"      # ROT13 encode text
+all my homies crypto rot13 out "text"     # ROT13 decode text
+all my homies crypto sshkeygen            # Generate SSH key pair
+```
+
+### 💰 Crypto Rates
+```powershell
+all my homies crypto rates               # Show cryptocurrency rates
+```
+
+Features:
+- Supports multiple hash algorithms (MD5, SHA1, SHA256, SHA512)
+- ROT13 encoding/decoding for text
+- Real-time cryptocurrency price tracking
+- SSH key pair generation
+
+### 🔐 AES Encryption
+```powershell
+# Text encryption/decryption
+all my homies crypto aes encrypt "text" -Password (Read-Host -AsSecureString)  # Encrypt text
+all my homies crypto aes decrypt "encrypted" -Password (Read-Host -AsSecureString)  # Decrypt text
+
+# File encryption/decryption
+all my homies crypto aes encryptfile "file.txt" -Password (Read-Host -AsSecureString)  # Encrypt file
+all my homies crypto aes decryptfile "file.txt_encrypted" -Password (Read-Host -AsSecureString)  # Decrypt file
+```
+
+Features:
+- AES-256 encryption with CBC mode
+- Secure password handling using SecureString
+- File encryption with progress tracking
+- Automatic IV generation and management
+- Base64 encoding for text encryption
+- Preserves file extensions and metadata
+
+---
+
+## 🔧 System Utilities
+
+AMH2W gives you system utilities under the `hate` namespace; because some things are just too annoying to deal with sober.
+
 ### 📊 JSON Power Tools
 ```powershell
 all my homies hate json view data.json
@@ -214,6 +333,42 @@ all my homies hate json table "https://jsonplaceholder.typicode.com/users"
 all my homies hate json chart test.json month value
 all my homies hate json highlight '{"name":"John"}'
 ```
+
+### 🌐 HTTP Client
+```powershell
+# Basic requests
+all my homies hate fetch "https://api.example.com"           # GET request
+all my homies hate fetch "https://api.example.com" -Method POST -Body '{"data":"value"}'  # POST with JSON
+all my homies hate fetch "https://example.com/file.zip" -OutFile "download.zip"  # Download file
+
+# Advanced options
+all my homies hate fetch "https://api.example.com" -Headers "api-key=1234"  # Custom headers
+all my homies hate fetch "https://api.example.com" -Params "page=1,limit=10"  # Query parameters
+all my homies hate fetch "https://api.example.com" -Timeout 60  # Custom timeout
+```
+
+### 📁 Path & Environment
+```powershell
+# PATH management
+all my homies hate path addpath     # Add directory to PATH
+all my homies hate path removepath  # Remove directory from PATH
+all my homies hate path printpath   # Show current PATH entries
+
+# Environment variables
+all my homies hate path addenv      # Add environment variable
+all my homies hate path removeenv   # Remove environment variable
+all my homies hate path printenv    # Show environment variables
+```
+
+Features:
+- Full HTTP client with support for all methods
+- JSON request/response handling
+- File download with progress tracking
+- PATH management for both user and system
+- Environment variable management
+- Interactive prompts for sensitive operations
+
+---
 
 ## 🧱 Architecture
 
