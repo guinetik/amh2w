@@ -10,7 +10,7 @@ function primes {
         if ($UpTo -lt 2) {
             return Err -Message "There are no primes less than 2"
         }
-        $result = Start-Clock
+        Start-Clock
         $sieve = @($true) * ($UpTo + 1)
         $sieve[0] = $false
         $sieve[1] = $false
@@ -29,7 +29,7 @@ function primes {
 
         Write-Host "🔢 Primes up to $UpTo : " -ForegroundColor Cyan
         Write-Host $primes | Format-Wide -Column 10
-        $result = Stop-Clock
+        Stop-Clock
         return Ok -Value $primes -Message "$($primes.Count) primes found"
     }
     catch {

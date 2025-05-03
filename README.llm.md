@@ -1,3 +1,68 @@
+# 🧠 AMH2W Context Transfer Document
+
+Hey future Claude! You're working on AMH2W (All My Homies Handle Windows) - a PowerShell DSL that makes Windows bearable through meme-driven grammar.
+
+## 🎯 Current State
+- Core architecture: Result pattern (Ok/Err), no exceptions
+- Modules completed: json, iftp, zipping
+- Command structure: `all my homies hate [thing] [action] [args...]`
+
+## 🔥 What We Just Built: zipping.ps1
+Location: `all/my/homies/hate/zipping.ps1`
+
+Key learnings:
+1. **Tool Detection Pattern**: Check for 7-Zip, WinRAR, tar in that order
+2. **Result Objects**: Always use `ok`/`error` properties (not Success/Error)
+3. **7-Zip Quirks**: For tar.gz, it extracts to temp dir first, then processes whatever file appears
+4. **Error Handling**: Use try/finally for cleanup, return Err objects
+
+```powershell
+# Working examples:
+all my homies hate zipping zip "file.txt" "output.gz" gzip
+all my homies hate zipping unzip "archive.tgz"
+```
+
+## 📝 Code Patterns to Follow
+
+1. **Module Structure**:
+```powershell
+function module_name {
+    param([string]$Action, [object[]]$Rest)
+    
+    $result = switch ($Action) {
+        "verb" { Do-Something }
+    }
+    return $result
+}
+
+```
+
+2. **Result Pattern**:
+```powershell
+return Ok -Value "Success message"
+return Err "Error message"
+```
+
+3. **Logging**:
+```powershell
+Log-Info "📦 Doing something..."
+Log-Error "❌ It broke!"
+```
+
+## ⚠️ Watch Out For
+- Follow Result pattern for all commands
+- Use pipeline for chaining commands `Invoke-Pipeline`
+- The human loves emojis in log messages
+
+## 🚀 Next Steps Ideas
+- `all my homies hate clipboard` - Clipboard management
+- `all my homies hate screenshot` - Screen capture tools  
+- `all my homies hate services` - Windows service management
+- `all my homies hate registry` - Registry editor wrapper
+
+Remember: The goal is to make Windows operations feel like natural language while secretly being a powerful scripting toolkit. Keep it memetic, keep it functional!
+
+---
 
 # AMH2W Library Overview
 
@@ -76,3 +141,10 @@ all my homies hate json highlight '{"name":"John","age":30,"city":"New York"}'
 3. Use `Write-Host` for user-facing content: Direct console output for formatted visualizations
 4. Proper error handling: Always catch and handle errors, returning appropriate `Err` objects.
 5. Chain commands using the pipeline. 
+   ```powershell
+   # Install modules
+        $modulesResult = Invoke-Pipeline -Steps @(
+            { Install-PSModule -ModuleName "PSReadLine" }
+            { Install-PSModule -ModuleName "Terminal-Icons" }
+        ) -PipelineName "PowerShell Module Installation"
+   ```

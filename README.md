@@ -334,6 +334,30 @@ all my homies hate json chart test.json month value
 all my homies hate json highlight '{"name":"John"}'
 ```
 
+### 📦 File Compression & Extraction
+```powershell
+# Compress files and folders
+all my homies hate zipping zip "source.txt" "archive.zip"  # Compress to ZIP
+all my homies hate zipping zip "folder" "archive.zip"      # Compress folder to ZIP
+all my homies hate zipping zip "file.txt" "archive.gz"     # Compress to GZIP
+all my homies hate zipping zip "folder" "archive.tar.gz"   # Compress to TAR.GZ
+all my homies hate zipping zip "folder" "archive.rar"      # Compress to RAR (requires WinRAR)
+
+# Extract archives
+all my homies hate zipping unzip "archive.zip" "output"    # Extract ZIP
+all my homies hate zipping unzip "archive.gz" "output"     # Extract GZIP
+all my homies hate zipping unzip "archive.tar.gz" "output" # Extract TAR.GZ
+all my homies hate zipping unzip "archive.rar" "output"    # Extract RAR
+```
+
+Features:
+- Supports multiple formats: ZIP, GZIP, TAR.GZ, RAR
+- Automatically detects and uses available tools (7-Zip, WinRAR, tar)
+- Handles both files and directories
+- Smart destination path generation
+- Progress tracking and error handling
+- Fallback to built-in PowerShell commands when needed
+
 ### 🌐 HTTP Client
 ```powershell
 # Basic requests
@@ -346,7 +370,6 @@ all my homies hate fetch "https://api.example.com" -Headers "api-key=1234"  # Cu
 all my homies hate fetch "https://api.example.com" -Params "page=1,limit=10"  # Query parameters
 all my homies hate fetch "https://api.example.com" -Timeout 60  # Custom timeout
 ```
-
 
 ### 📁 FTP Client
 ```powershell
