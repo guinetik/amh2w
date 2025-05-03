@@ -1,0 +1,59 @@
+﻿function terminal {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0, Mandatory = $true)]
+        [string]$Command,
+
+        [Parameter(Position = 1)]
+        [string]$Title = "AMH2W",
+
+        [Parameter(Position = 2)]
+        [Alias("Admin")]
+        [object]$AsAdmin = $false
+    )
+
+    $admin = $false
+    if ($AsAdmin -is [bool]) { $admin = $AsAdmin }
+    elseif ($AsAdmin -is [string]) {
+        $truthy = @("true", "1", "yes", "y", "+", "on")
+        $admin = $truthy -contains $AsAdmin.ToLower()
+    }
+
+    try {
+        $encoded = "`"$Command`""
+
+        if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
+            Write-Host "🚀 Opening Windows Terminal tab: $Title" -ForegroundColor Cyan
+
+            $argsz = @(
+                "-w", "0",
+                "nt",
+                "-p", "PowerShell",
+                "--title", $Title,
+                "powershell", "-NoExit", "-Command", $encoded
+            )
+
+            if ($admin) {
+                Start-Process wt.exe -Verb RunAs -ArgumentList $argsz
+            } else {
+                Start-Process wt.exe -ArgumentList $argsz
+            }
+
+            return Ok -Message "Command launched in Windows Terminal"
+        } else {
+            Write-Host "📦 Falling back to PowerShell window..." -ForegroundColor Yellow
+            $fallbackArgs = @("-NoExit", "-Command", $Command)
+
+            if ($admin) {
+                Start-Process powershell.exe -Verb RunAs -ArgumentList $fallbackArgs
+            } else {
+                Start-Process powershell.exe -ArgumentList $fallbackArgs
+            }
+
+            return Ok -Message "Command launched in new PowerShell window"
+        }
+    }
+    catch {
+        return Err -Msg "Failed to open terminal: $_"
+    }
+}
