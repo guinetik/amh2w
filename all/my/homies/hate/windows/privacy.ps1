@@ -2,7 +2,7 @@
     [CmdletBinding()]
     param()
 
-    function Ensure-RegistryPath {
+    function registry {
         param([string]$Path)
         if (-not (Test-Path $Path)) {
             New-Item -Path $Path -Force | Out-Null
@@ -22,22 +22,22 @@
     Set-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Value 1
 
     # Advertising ID
-    Ensure-RegistryPath "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
+    registry "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Value 0
 
     # Typing diagnostics
-    Ensure-RegistryPath "HKCU:\SOFTWARE\Microsoft\Input\TIPC"
+    registry "HKCU:\SOFTWARE\Microsoft\Input\TIPC"
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC" -Name "Enabled" -Value 0
 
     # Input personalization
     $inkPath = "HKCU:\SOFTWARE\Microsoft\InputPersonalization"
-    Ensure-RegistryPath $inkPath
+    registry $inkPath
     Set-ItemProperty -Path $inkPath -Name "RestrictImplicitInkCollection" -Value 1
     Set-ItemProperty -Path $inkPath -Name "RestrictImplicitTextCollection" -Value 1
 
     # Disable location sensor
     $sensorKey = "HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Permissions\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
-    Ensure-RegistryPath $sensorKey
+    registry $sensorKey
     Set-ItemProperty -Path $sensorKey -Name "SensorPermissionState" -Value 0
 
     # Prevent Windows Defender from submitting samples
@@ -51,7 +51,7 @@
 
     # Disable Cortana personalization (inking/contacts/etc.)
     $ppKey = "HKCU:\SOFTWARE\Microsoft\Personalization\Settings"
-    Ensure-RegistryPath $ppKey
+    registry $ppKey
     Set-ItemProperty -Path $ppKey -Name "AcceptedPrivacyPolicy" -Value 0
 
     # Disable background access for apps
@@ -70,7 +70,7 @@
     )
     foreach ($group in $groups) {
         $groupKey = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\$group"
-        Ensure-RegistryPath $groupKey
+        registry $groupKey
         Set-ItemProperty -Path $groupKey -Name "Enabled" -Value 0
     }
 

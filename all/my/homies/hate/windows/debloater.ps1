@@ -25,7 +25,7 @@ function debloater {
     try {
         # Run the debloater script from the web
         Log-Info "Running debloater script from https://debloat.raphi.re/"
-        & ([scriptblock]::Create((irm "https://debloat.raphi.re/")))
+        & ([scriptblock]::Create((Invoke-RestMethod "https://debloat.raphi.re/")))
         
         Log-Success "Windows Debloater completed successfully!"
         return Ok("Windows Debloater completed successfully")

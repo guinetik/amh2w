@@ -5,12 +5,14 @@
         [string]$Text,
 
         [Parameter(Mandatory = $true, Position = 1)]
-        [string]$Password
+        [SecureString]$Password
     )
 
     try {
         $sha = [System.Security.Cryptography.SHA256]::Create()
-        $key = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($Password))
+        # Convert SecureString to string
+        $passwordString = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password))
+        $key = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($passwordString))
 
         $aes = [System.Security.Cryptography.Aes]::Create()
         $aes.KeySize = 256

@@ -5,13 +5,15 @@
         [string]$Path,
 
         [Parameter(Mandatory = $true, Position = 1)]
-        [string]$Password
+        [SecureString]$Password
     )
 
     function DeriveKeyFromPassword {
-        param([string]$Password)
+        param([SecureString]$Password)
         $sha = [System.Security.Cryptography.SHA256]::Create()
-        return $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($Password))
+        # Convert SecureString to string
+        $passwordString = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password))
+        return $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($passwordString))
     }
 
     function EncryptFileInternal {
