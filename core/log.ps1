@@ -91,9 +91,10 @@ function Write-Log {
     $currentContext = ""
     if (Test-Path 'variable:global:AMH2W_PipelineContext') {
         if ($global:AMH2W_PipelineContext.CurrentNamespace) {
-            $currentContext = "[$($global:AMH2W_PipelineContext.CurrentNamespace)]"
             if ($global:AMH2W_PipelineContext.CurrentCommand) {
                 $currentContext += "[$($global:AMH2W_PipelineContext.CurrentCommand)]"
+            } else {
+                $currentContext = "[$($global:AMH2W_PipelineContext.CurrentNamespace)]"
             }
             $currentContext += " "
         }

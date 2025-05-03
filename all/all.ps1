@@ -11,6 +11,7 @@ function all {
     # If no arguments, show help
     if (-not $Arguments -or $Arguments.Count -eq 0) {
         $moduleRoot = $PSScriptRoot
+        WriteLine "Welcome to all"
         Show-CommandHelp -CommandPath $moduleRoot -CommandChain "all"
         return Ok "Help displayed for root namespace"
     }

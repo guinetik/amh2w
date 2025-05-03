@@ -57,7 +57,7 @@ function Invoke-Elevate {
         [string]$Description = "This operation requires administrator privileges",
         
         [Parameter()]
-        [bool]$KeepOpen = $false
+        [bool]$KeepOpen = $true
     )
     
     # If already admin, do nothing
@@ -101,4 +101,35 @@ function Invoke-Elevate {
     catch {
         Write-Error "Failed to elevate command: $_"
     }
+}
+
+function Invoke-VerboseCommand {
+    param (
+        [string]$Command
+    )
+
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = "powershell.exe"
+    $psi.Arguments = "-NoProfile -Command $Command"
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.UseShellExecute = $false
+    $psi.CreateNoWindow = $true
+
+    $proc = New-Object System.Diagnostics.Process
+    $proc.StartInfo = $psi
+    $proc.Start() | Out-Null
+
+    while (-not $proc.HasExited) {
+        $out = $proc.StandardOutput.ReadLine()
+        if ($out) { Write-Host $out -ForegroundColor DarkGray}
+    }
+
+    while (-not $proc.StandardError.EndOfStream) {
+        $err = $proc.StandardError.ReadLine()
+        if ($err) { Log-Error $err }
+    }
+
+    $proc.WaitForExit()
+    return $proc.ExitCode
 }
