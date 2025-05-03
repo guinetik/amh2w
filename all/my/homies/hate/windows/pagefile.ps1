@@ -73,6 +73,6 @@
         return Ok -Value $results -Message "$($results.Count) pagefile(s) configured"
     }
     catch {
-        return Err -Msg "Failed to configure pagefiles: $_"
+        return Err -Message "Failed to configure pagefiles: $_"
     }
 }

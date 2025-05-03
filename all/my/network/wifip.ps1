@@ -29,13 +29,13 @@
 
         if ($results.Count -eq 0) {
             Write-Host "❌ No saved Wi-Fi profiles found." -ForegroundColor Yellow
-            return Err -Msg "No Wi-Fi profiles found"
+            return Err -Message "No Wi-Fi profiles found"
         }
 
         Show-JsonTable $results
         return Ok -Value $results -Message "$($results.Count) Wi-Fi password(s) retrieved"
     }
     catch {
-        return Err -Msg "Failed to retrieve Wi-Fi passwords: $_"
+        return Err -Message "Failed to retrieve Wi-Fi passwords: $_"
     }
 }

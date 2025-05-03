@@ -73,6 +73,6 @@
         return Ok -Value $result -Message "Drive check complete"
     }
     catch {
-        return Err -Msg "Drive check failed: $_"
+        return Err -Message "Drive check failed: $_"
     }
 }

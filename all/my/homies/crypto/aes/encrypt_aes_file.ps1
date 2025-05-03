@@ -83,7 +83,7 @@
             return Ok -Value $results -Message "$($results.Count) file(s) encrypted"
         }
         catch {
-            return Err -Msg "Encryption error: $_"
+            return Err -Message "Encryption error: $_"
         }
     }
 
@@ -99,6 +99,6 @@
     }
     catch {
         Write-Host "Error: Command function '$arg' failed: $_" -ForegroundColor Red
-        return Err -Msg "Top-level error: $_"
+        return Err -Message "Top-level error: $_"
     }
 }

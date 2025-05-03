@@ -60,6 +60,6 @@
         }) -Message "Weather fetched successfully"
     }
     catch {
-        return Err -Msg "Weather check failed: $_"
+        return Err -Message "Weather check failed: $_"
     }
 }

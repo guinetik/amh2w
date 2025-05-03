@@ -32,7 +32,7 @@ function Get-ShellInfo {
     }
     catch {
         Log-Error "Error getting shell information: $_"
-        return Err -Msg "Error getting shell information: $_" -Optional $true
+        return Err -Message "Error getting shell information: $_" -Optional $true
     }
 }
 
@@ -110,7 +110,7 @@ function Install-PowerShellCore {
         return Ok -Value $true -Message "PowerShell Core installed successfully"
     } else {
         Log-Error "Failed to install PowerShell Core: $installResult"
-        return Err -Msg "PowerShell Core installation failed" -Optional $true
+        return Err -Message "PowerShell Core installation failed" -Optional $true
     }
 }
 
@@ -136,7 +136,7 @@ function Install-PSModule {
     }
     catch {
         Log-Error "Failed to install $ModuleName module: $_"
-        return Err -Msg "Failed to install $ModuleName module: $_" -Optional $true
+        return Err -Message "Failed to install $ModuleName module: $_" -Optional $true
     }
 }
 
@@ -185,6 +185,6 @@ Import-Module -Name Terminal-Icons
     }
     catch {
         Log-Error "Failed to configure PowerShell profile: $_"
-        return Err -Msg "Failed to configure PowerShell profile: $_" -Optional $true
+        return Err -Message "Failed to configure PowerShell profile: $_" -Optional $true
     }
 }

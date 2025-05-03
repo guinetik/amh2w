@@ -28,6 +28,6 @@
         return Ok -Value $hash -Message "$Algorithm hash generated"
     }
     catch {
-        return Err -Msg "$Algorithm hashing failed: $_"
+        return Err -Message "$Algorithm hashing failed: $_"
     }
 } 

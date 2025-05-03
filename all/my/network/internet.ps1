@@ -10,7 +10,7 @@
     try {
         if ($IsLinux) {
             Write-Host "⚠️  Linux not supported yet — implement with ping or fping" -ForegroundColor Yellow
-            return Err -Msg "Linux not yet supported"
+            return Err -Message "Linux not yet supported"
         }
 
         Write-Progress -Activity "Pinging hosts..." -Status "Sending parallel requests"
@@ -78,6 +78,6 @@
         }
     }
     catch {
-        return Err -Msg "Internet check failed: $_"
+        return Err -Message "Internet check failed: $_"
     }
 }

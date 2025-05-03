@@ -16,7 +16,7 @@
     }
     catch {
         Write-Host "Error: Command function '$arg' failed: $_" -ForegroundColor Red
-        return Err -Msg "Failed to start Notepad++"
+        return Err -Message "Failed to start Notepad++"
     }
 }
 

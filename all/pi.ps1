@@ -74,6 +74,6 @@
         return Ok -Value $output -Message "Calculated π to $Digits digits"
     }
     catch {
-        return Err -Msg "Failed to calculate π: $_"
+        return Err -Message "Failed to calculate π: $_"
     }
 }

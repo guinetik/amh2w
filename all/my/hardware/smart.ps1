@@ -14,14 +14,14 @@ function smart {
         # Check smartctl availability
         $smart = Get-Command smartctl -ErrorAction SilentlyContinue
         if (-not $smart) {
-            return Err -Msg "smartctl not found — please install smartmontools"
+            return Err -Message "smartctl not found — please install smartmontools"
         }
 
         $scanCmd = if ($IsLinux) { "sudo smartctl --scan-open" } else { "smartctl --scan-open" }
         $devices = Invoke-Expression $scanCmd | Where-Object { $_ -notmatch '^#' }
 
         if (-not $devices) {
-            return Err -Msg "No SMART-capable devices found"
+            return Err -Message "No SMART-capable devices found"
         }
 
         $results = @()
@@ -80,6 +80,6 @@ function smart {
     }
     catch {
         Write-Host "Error: Command function '$arg' failed: $_" -ForegroundColor Red
-        return Err -Msg "Error gathering storage health: $_"
+        return Err -Message "Error gathering storage health: $_"
     }
 }

@@ -31,6 +31,6 @@
         return Ok -Value $rotated -Message "ROT13 $label"
     }
     catch {
-        return Err -Msg "ROT13 failed: $_"
+        return Err -Message "ROT13 failed: $_"
     }
 }

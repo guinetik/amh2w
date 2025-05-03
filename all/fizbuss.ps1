@@ -7,7 +7,7 @@
 
     try {
         if ($UpTo -lt 1) {
-            return Err -Msg "Please enter a number greater than zero."
+            return Err -Message "Please enter a number greater than zero."
         }
 
         1..$UpTo | ForEach-Object {
@@ -28,6 +28,6 @@
         return Ok -Message "Ran fizbuss from 1 to $UpTo"
     }
     catch {
-        return Err -Msg "fizbuss error: $_"
+        return Err -Message "fizbuss error: $_"
     }
 }

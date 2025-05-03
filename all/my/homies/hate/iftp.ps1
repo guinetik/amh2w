@@ -112,7 +112,7 @@ function Connect-Sftp {
         }
         
         if (-not $winscpPath) {
-            return Err -Msg "WinSCP not found. Please install it using: choco install winscp"
+            return Err -Message "WinSCP not found. Please install it using: choco install winscp"
         }
         
         Add-Type -Path $winscpPath
@@ -144,7 +144,7 @@ function Connect-Sftp {
         return Ok -Value "Connected to $Hostname`:$Port as $Username (SFTP)"
     } catch {
         Log-Error "[sftp] Connection failed: $_"
-        return Err -Msg "Connection failed: $_"
+        return Err -Message "Connection failed: $_"
     }
 }
 
@@ -180,7 +180,7 @@ function Connect-Ftp {
         return Ok -Value "Connected to $Server as $Username (FTP)"
     } catch {
         Log-Error "[ftp] Connection failed: $_"
-        return Err -Msg "Connection failed: $_"
+        return Err -Message "Connection failed: $_"
     }
 }
 
@@ -190,7 +190,7 @@ function Get-RfsItem {
     )
 
     if (-not $script:rfsSession) {
-        return Err -Msg "Not connected."
+        return Err -Message "Not connected."
     }
 
     switch ($script:rfsSession.Type) {
@@ -217,7 +217,7 @@ function Get-FtpItem {
         return Ok -Value $content
     } catch {
         Log-Error "[ftp] Failed to list directory: $_"
-        return Err -Msg "Failed to list directory: $_"
+        return Err -Message "Failed to list directory: $_"
     }
 }
 
@@ -235,7 +235,7 @@ function Get-SftpItem {
         return Ok -Value $output
     } catch {
         Log-Error "[sftp] Failed to list directory: $_"
-        return Err -Msg "Failed to list directory: $_"
+        return Err -Message "Failed to list directory: $_"
     }
 }
 
@@ -246,7 +246,7 @@ function Receive-RfsItem {
     )
 
     if (-not $script:rfsSession) {
-        return Err -Msg "Not connected."
+        return Err -Message "Not connected."
     }
 
     switch ($script:rfsSession.Type) {
@@ -312,7 +312,7 @@ function Receive-FtpItem {
         return Ok -Value "Downloaded to $LocalPath"
     } catch {
         Log-Error "[ftp] ❌ Download failed: $_"
-        return Err -Msg "Download failed: $_"
+        return Err -Message "Download failed: $_"
     }
 }
 
@@ -352,7 +352,7 @@ function Receive-SftpItem {
         return Ok -Value "Downloaded to $LocalPath"
     } catch {
         Log-Error "[sftp] ❌ Download failed: $_"
-        return Err -Msg "Download failed: $_"
+        return Err -Message "Download failed: $_"
     }
 }
 
@@ -363,7 +363,7 @@ function Send-RfsItem {
     )
 
     if (-not $script:rfsSession) {
-        return Err -Msg "Not connected."
+        return Err -Message "Not connected."
     }
 
     switch ($script:rfsSession.Type) {
@@ -431,7 +431,7 @@ function Send-FtpItem {
         return Ok -Value "Uploaded to $RemotePath"
     } catch {
         Log-Error "[ftp] ❌ Upload failed: $_"
-        return Err -Msg "Upload failed: $_"
+        return Err -Message "Upload failed: $_"
     }
 }
 
@@ -477,7 +477,7 @@ function Send-SftpItem {
         return Ok -Value "Uploaded to $RemotePath"
     } catch {
         Log-Error "[sftp] ❌ Upload failed: $_"
-        return Err -Msg "Upload failed: $_"
+        return Err -Message "Upload failed: $_"
     }
 }
 
@@ -497,13 +497,13 @@ function Disconnect-Rfs {
         return Ok -Value "Session ended."
     } catch {
         Log-Error "Disconnect failed: $_"
-        return Err -Msg "Disconnect failed: $_"
+        return Err -Message "Disconnect failed: $_"
     }
 }
 
 function Test-Rfs {
     if (-not $script:rfsSession) {
-        return Err -Msg "No active session."
+        return Err -Message "No active session."
     }
 
     try {
@@ -524,7 +524,7 @@ function Test-Rfs {
         return Ok -Value "Connection test passed"
     } catch {
         Log-Error "Connection test failed: $_"
-        return Err -Msg "Connection test failed: $_"
+        return Err -Message "Connection test failed: $_"
     }
 }
 

@@ -12,7 +12,7 @@
         $items = $response.channel.item
 
         if (-not $items) {
-            return Err -Msg "No exchange rates found for currency '$Currency'"
+            return Err -Message "No exchange rates found for currency '$Currency'"
         }
 
         $jsonObject = $items | ForEach-Object {
@@ -30,6 +30,6 @@
         return Ok -Value $jsonObject -Message "$($jsonObject.Count) exchange rates listed"
     }
     catch {
-        return Err -Msg "Failed to fetch exchange rates for '$Currency': $_"
+        return Err -Message "Failed to fetch exchange rates for '$Currency': $_"
     }
 }

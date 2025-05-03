@@ -54,6 +54,6 @@
         return Ok -Value $result -Message "$($result.Count) anagrams generated"
     }
     catch {
-        return Err -Msg "Anagram generation failed: $_"
+        return Err -Message "Anagram generation failed: $_"
     }
 }

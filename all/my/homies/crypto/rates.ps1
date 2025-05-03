@@ -73,6 +73,6 @@
         }
     }
     catch {
-        return Err -Msg "Crypto command failed: $_"
+        return Err -Message "Crypto command failed: $_"
     }
 }

@@ -18,7 +18,7 @@ function clock {
             if ($result) {
                 return Ok -Value $result -Message "Clock started successfully"
             } else {
-                return Err -Msg "Failed to start clock"
+                return Err -Message "Failed to start clock"
             }
         }
         
@@ -27,7 +27,7 @@ function clock {
             if ($result.ok) {
                 return Ok -Value $result.value -Message "Clock stopped successfully"
             } else {
-                return Err -Msg $result.error
+                return Err -Message $result.error
             }
         }
         
@@ -85,7 +85,7 @@ function Stop-Clock {
     # Check if clock is running
     if (-not (Test-Path $clockFile)) {
         Log-Warning "No running clock found. Start a clock first with 'start'."
-        return Err -Msg "No running clock found"
+        return Err -Message "No running clock found"
     }
     
     # Get start time and calculate elapsed time

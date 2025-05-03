@@ -426,7 +426,7 @@ No `throw`. Only structured `Result` objects.
 ```powershell
 return Ok -Value "done"
 return Err "failed"
-return Err -Msg "optional warning" -Optional $true
+return Err -Message "optional warning" -Optional $true
 ```
 
 ---

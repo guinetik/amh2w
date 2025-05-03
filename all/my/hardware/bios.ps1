@@ -4,7 +4,7 @@
 
         if ($IsLinux) {
             $model = (sudo dmidecode -s system-product-name 2>$null).Trim()
-            if (-not $model) { return Err -Msg "No BIOS information available" }
+            if (-not $model) { return Err -Message "No BIOS information available" }
 
             $version      = (sudo dmidecode -s bios-version 2>$null).Trim()
             $releaseDate  = (sudo dmidecode -s bios-release-date 2>$null).Trim()
@@ -55,6 +55,6 @@
         return Ok -Value $biosObj
     }
     catch {
-        return Err -Msg "BIOS check failed: $_"
+        return Err -Message "BIOS check failed: $_"
     }
 }

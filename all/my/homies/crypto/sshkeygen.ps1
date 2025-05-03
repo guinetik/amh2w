@@ -19,7 +19,7 @@
         & ssh-keygen
 
         if ($LASTEXITCODE -ne 0) {
-            return Err -Msg "ssh-keygen failed"
+            return Err -Message "ssh-keygen failed"
         }
 
         $keyTypes = @(
@@ -42,10 +42,10 @@
             }
         }
 
-        return Err -Msg "SSH key was generated, but no known public key file was found"
+        return Err -Message "SSH key was generated, but no known public key file was found"
     }
     catch {
         Write-Host "Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])" -ForegroundColor Red
-        return Err -Msg "SSH key generation failed: $_"
+        return Err -Message "SSH key generation failed: $_"
     }
 }

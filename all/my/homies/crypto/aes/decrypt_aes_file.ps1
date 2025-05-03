@@ -86,7 +86,7 @@
             return Ok -Value $results -Message "$($results.Count) file(s) decrypted"
         }
         catch {
-            return Err -Msg "Decryption error: $_"
+            return Err -Message "Decryption error: $_"
         }
     }
 
@@ -104,6 +104,6 @@
         return $result
     }
     catch {
-        return Err -Msg "Top-level decryption failed: $_"
+        return Err -Message "Top-level decryption failed: $_"
     }
 }

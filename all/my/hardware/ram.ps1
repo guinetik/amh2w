@@ -79,6 +79,6 @@
         return Ok -Value $ram
     }
     catch {
-        return Err -Msg "Error reading memory info: $_"
+        return Err -Message "Error reading memory info: $_"
     }
 }

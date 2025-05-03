@@ -54,6 +54,6 @@
         }
     }
     catch {
-        return Err -Msg "Failed to open terminal: $_"
+        return Err -Message "Failed to open terminal: $_"
     }
 }

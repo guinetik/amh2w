@@ -123,6 +123,6 @@ function numbers {
         return Ok -Value $result -Message "Conversion complete"
     }
     catch {
-        return Err -Msg "Conversion failed: $_"
+        return Err -Message "Conversion failed: $_"
     }
 }

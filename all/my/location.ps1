@@ -22,6 +22,6 @@
         return Ok -Value $info -Message "Location determined from public IP"
     }
     catch {
-        return Err -Msg "Failed to retrieve location: $_"
+        return Err -Message "Failed to retrieve location: $_"
     }
 }

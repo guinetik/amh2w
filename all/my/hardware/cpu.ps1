@@ -104,6 +104,6 @@ function cpu {
         return Ok -Value $cpuObject
     }
     catch {
-        return Err -Msg "CPU query failed: $_"
+        return Err -Message "CPU query failed: $_"
     }
 }

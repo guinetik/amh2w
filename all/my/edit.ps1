@@ -21,7 +21,7 @@
 
     try {
         if (-not (Test-Path $Path -PathType Leaf)) {
-            return Err -Msg "❌ File not found or not accessible: '$Path'"
+            return Err -Message "❌ File not found or not accessible: '$Path'"
         }
 
         $editors = @(
@@ -38,10 +38,10 @@
         Write-Host ""
         Write-Host "⚠️ No editor found." -ForegroundColor Yellow
         Write-Host "💡 Try installing one via 'winget install helix.helix' or similar."
-        return Err -Msg "No available editor succeeded"
+        return Err -Message "No available editor succeeded"
     }
     catch {
         Write-Host "Error: Command function '$arg' failed: $_" -ForegroundColor Red
-        return Err -Msg "Edit command failed: $_"
+        return Err -Message "Edit command failed: $_"
     }
 }

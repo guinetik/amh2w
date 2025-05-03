@@ -7,7 +7,7 @@
 
     try {
         if ($Count -lt 1) {
-            return Err -Msg "Must provide a number ≥ 1"
+            return Err -Message "Must provide a number ≥ 1"
         }
 
         $fib = @(0)
@@ -23,6 +23,6 @@
         return Ok -Value $fib -Message "$Count Fibonacci numbers generated"
     }
     catch {
-        return Err -Msg "Fibonacci generation failed: $_"
+        return Err -Message "Fibonacci generation failed: $_"
     }
 }

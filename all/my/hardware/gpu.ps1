@@ -10,12 +10,12 @@
 
     try {
         if ($IsLinux) {
-            return Err -Msg "Linux GPU support is not yet implemented"
+            return Err -Message "Linux GPU support is not yet implemented"
         }
 
         $gpus = Get-WmiObject Win32_VideoController
         if (-not $gpus) {
-            return Err -Msg "No GPU devices found"
+            return Err -Message "No GPU devices found"
         }
 
         Write-Host "`n🎮 GPU Information:" -ForegroundColor Cyan
@@ -57,6 +57,6 @@
         return Ok -Value $gpuList
     }
     catch {
-        return Err -Msg "GPU check failed: $_"
+        return Err -Message "GPU check failed: $_"
     }
 }

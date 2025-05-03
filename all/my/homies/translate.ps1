@@ -46,7 +46,7 @@
     }
     catch {
         Write-Host "⚠️ Translation failed: $_" -ForegroundColor Yellow
-        return Err -Msg "Translation failed: $_"
+        return Err -Message "Translation failed: $_"
     }
 }
 

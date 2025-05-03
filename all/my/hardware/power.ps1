@@ -58,6 +58,6 @@
         return Ok -Value $summary
     }
     catch {
-        return Err -Msg "Power check failed: $_"
+        return Err -Message "Power check failed: $_"
     }
 }

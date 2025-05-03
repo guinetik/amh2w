@@ -31,6 +31,6 @@
         return Ok -Value ([Convert]::ToBase64String($mem.ToArray())) -Message "Text encrypted"
     }
     catch {
-        return Err -Msg "Encryption failed: $_"
+        return Err -Message "Encryption failed: $_"
     }
 }

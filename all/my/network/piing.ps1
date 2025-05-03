@@ -8,7 +8,7 @@
     try {
         $hosts = $Hostname -split ',' | ForEach-Object { $_.Trim() }
         if ($hosts.Count -eq 0) {
-            return Err -Msg "No valid hosts provided"
+            return Err -Message "No valid hosts provided"
         }
 
         Write-Progress "Pinging host(s)..." -Status "Sending ping requests"
@@ -65,10 +65,10 @@
             return Ok -Value $results -Message "$reachable of $($hosts.Count) host(s) reachable"
         }
         else {
-            return Err -Msg "All hosts unreachable" -Optional $true -Value $results
+            return Err -Message "All hosts unreachable" -Optional $true -Value $results
         }
     }
     catch {
-        return Err -Msg "Ping command failed: $_"
+        return Err -Message "Ping command failed: $_"
     }
 }

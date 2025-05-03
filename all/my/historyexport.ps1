@@ -90,7 +90,7 @@
             return Ok -Value $results -Message "$($results.Count) file(s) encrypted"
         }
         catch {
-            return Err -Msg "Encryption error: $_"
+            return Err -Message "Encryption error: $_"
         }
     }
 
@@ -110,6 +110,6 @@
         return $result
     }
     catch {
-        return Err -Msg "Top-level error: $_"
+        return Err -Message "Top-level error: $_"
     }
 }

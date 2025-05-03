@@ -102,6 +102,6 @@
         return Ok -Message "IP diagnostics complete"
     }
     catch {
-        return Err -Msg "IP diagnostics failed: $_"
+        return Err -Message "IP diagnostics failed: $_"
     }
 }

@@ -16,6 +16,6 @@
         return Ok -Value $enabled
     }
     catch {
-        Return Err -Msg "Error: $_"
+        Return Err -Message "Error: $_"
     }
 }

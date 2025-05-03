@@ -11,7 +11,7 @@
 
     try {
         if (-not (Test-Path $Path)) {
-            return Err -Msg "File not found at path: $Path"
+            return Err -Message "File not found at path: $Path"
         }
 
         $stream = [System.IO.File]::OpenRead($Path)
@@ -35,6 +35,6 @@
         return Ok -Value $result -Message "$Algorithm hash computed"
     }
     catch {
-        return Err -Msg "Hashing failed: $_"
+        return Err -Message "Hashing failed: $_"
     }
 }

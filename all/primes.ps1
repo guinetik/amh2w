@@ -8,7 +8,7 @@ function primes {
 
     try {
         if ($UpTo -lt 2) {
-            return Err -Msg "There are no primes less than 2"
+            return Err -Message "There are no primes less than 2"
         }
         $result = Start-Clock
         $sieve = @($true) * ($UpTo + 1)
@@ -33,6 +33,6 @@ function primes {
         return Ok -Value $primes -Message "$($primes.Count) primes found"
     }
     catch {
-        return Err -Msg "Prime generation failed: $_"
+        return Err -Message "Prime generation failed: $_"
     }
 }

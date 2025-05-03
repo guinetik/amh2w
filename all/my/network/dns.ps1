@@ -25,6 +25,6 @@
         Return Ok -Value $speed
     }
     catch {
-        Return Err -Msg "Error: $($Error[0])"
+        Return Err -Message "Error: $($Error[0])"
     }
 }

@@ -1,12 +1,12 @@
 ﻿function motherboard {
     try {
         if ($IsLinux) {
-            return Err -Msg "Linux motherboard support is not yet implemented"
+            return Err -Message "Linux motherboard support is not yet implemented"
         }
 
         $boards = Get-WmiObject -Class Win32_BaseBoard
         if (-not $boards) {
-            return Err -Msg "No motherboard information found"
+            return Err -Message "No motherboard information found"
         }
 
         Write-Host "`n🧩 Motherboard Info:" -ForegroundColor Cyan
@@ -48,6 +48,6 @@
         return Ok -Value $result
     }
     catch {
-        return Err -Msg "Motherboard info failed: $_"
+        return Err -Message "Motherboard info failed: $_"
     }
 }

@@ -221,4 +221,4 @@ function Set-LogToFile {
 Initialize-Logging
 
 # Export functions
-Export-ModuleMember -Function Write-Log, Log-Info, Log-Success, Log-Error, Log-Warning, Log-Debug, Log-Trace, Set-LogVerbosity, Set-LogToFile
+#Export-ModuleMember -Function Write-Log, Log-Info, Log-Success, Log-Error, Log-Warning, Log-Debug, Log-Trace, Set-LogVerbosity, Set-LogToFile

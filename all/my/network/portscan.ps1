@@ -19,7 +19,7 @@
 
     try {
         if (-not $Subnet -match '^(\d{1,3}\.){2,3}\d{1,3}$') {
-            return Err -Msg "Invalid subnet: $Subnet"
+            return Err -Message "Invalid subnet: $Subnet"
         }
 
         $results = @()
@@ -65,6 +65,6 @@
         return Ok -Value $open -Message "$($open.Count) open ports found"
     }
     catch {
-        return Err -Msg "Port scan failed: $_"
+        return Err -Message "Port scan failed: $_"
     }
 }

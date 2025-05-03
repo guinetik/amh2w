@@ -25,6 +25,6 @@
         }
     }
     catch {
-        return Err -Msg "Failed to launch scoop installer: $_"
+        return Err -Message "Failed to launch scoop installer: $_"
     }
 }

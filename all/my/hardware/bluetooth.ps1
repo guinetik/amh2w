@@ -16,7 +16,7 @@
 
                 if (-not $raw) {
                     Write-Host "⚠️ No Bluetooth devices found." -ForegroundColor Yellow
-                    return Err -Msg "No devices found"
+                    return Err -Message "No devices found"
                 }
 
                 $jsonObject = $raw | ForEach-Object {
@@ -34,7 +34,7 @@
 
             "enable" {
                 if (-not $InstanceId) {
-                    return Err -Msg "Missing InstanceId for enable"
+                    return Err -Message "Missing InstanceId for enable"
                 }
                 Enable-PnpDevice -InstanceId $InstanceId -Confirm:$false
                 Write-Host "✅ Enabled Bluetooth device: $InstanceId" -ForegroundColor Green
@@ -43,7 +43,7 @@
 
             "disable" {
                 if (-not $InstanceId) {
-                    return Err -Msg "Missing InstanceId for disable"
+                    return Err -Message "Missing InstanceId for disable"
                 }
                 Disable-PnpDevice -InstanceId $InstanceId -Confirm:$false
                 Write-Host "✅ Disabled Bluetooth device: $InstanceId" -ForegroundColor Yellow
@@ -52,7 +52,7 @@
 
             "restart" {
                 if (-not $InstanceId) {
-                    return Err -Msg "Missing InstanceId for restart"
+                    return Err -Message "Missing InstanceId for restart"
                 }
                 Restart-PnpDevice -InstanceId $InstanceId -Confirm:$false
                 Write-Host "🔄 Restarted Bluetooth device: $InstanceId" -ForegroundColor Cyan
@@ -61,6 +61,6 @@
         }
     }
     catch {
-        return Err -Msg "Bluetooth command failed: $_"
+        return Err -Message "Bluetooth command failed: $_"
     }
 }

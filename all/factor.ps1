@@ -7,7 +7,7 @@
 
     try {
         if ($Number -lt 2) {
-            return Err -Msg "Can't factor numbers less than 2"
+            return Err -Message "Can't factor numbers less than 2"
         }
 
         $n = $Number
@@ -32,6 +32,6 @@
         return Ok -Value $factors -Message "Prime factorization complete"
     }
     catch {
-        return Err -Msg "Factorization failed: $_"
+        return Err -Message "Factorization failed: $_"
     }
 }

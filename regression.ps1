@@ -15,9 +15,9 @@ $global:TestResults = @{
 function Write-Error {
     param(
         [string]$Command,
-        [string]$Error
+        [string]$Errorz
     )
-    Write-Host "Error in '$Command' command: $Error" -ForegroundColor Red
+    Write-Host "Error in '$Command' command: $Errorz" -ForegroundColor Red
     $global:TestResults.Failed += $Command
 }
 

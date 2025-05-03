@@ -40,6 +40,6 @@
     }
     catch {
         Write-Host "Error: Command function '$arg' failed: $_" -ForegroundColor Red
-        return Err -Msg "Decryption failed: $_"
+        return Err -Message "Decryption failed: $_"
     }
 }
