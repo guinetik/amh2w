@@ -95,7 +95,7 @@ cd AMH2W
 ## 🚀 Example Usage
 
 ```powershell
-all                                 # Root entrypoint. Has currency and weather functions. Has Math functions because math is 'all'.
+all                                 # Root entrypoint. `all` is Math and Everything in between.
 all my                              # User-level context
 all my clock start                  # Start a clock
 all my clock stop                   # Stop a clock
@@ -345,6 +345,28 @@ all my homies hate fetch "https://example.com/file.zip" -OutFile "download.zip" 
 all my homies hate fetch "https://api.example.com" -Headers "api-key=1234"  # Custom headers
 all my homies hate fetch "https://api.example.com" -Params "page=1,limit=10"  # Query parameters
 all my homies hate fetch "https://api.example.com" -Timeout 60  # Custom timeout
+```
+
+
+### 📁 FTP Client
+```powershell
+# Connect to an FTP server (prompts for password if not provided)
+all my homies hate iftp connect ftp.example.com username
+
+# List remote directory (defaults to root)
+all my homies hate iftp ls /path/to/dir
+
+# Download remote file to local path
+all my homies hate iftp download /remote/file.txt local.txt
+
+# Upload local file to remote path
+all my homies hate iftp upload local.txt /remote/target.txt
+
+# Disconnect from active session
+all my homies hate iftp disconnect
+
+# Test connection to the current FTP server
+all my homies hate iftp test
 ```
 
 ### 📁 Path & Environment
