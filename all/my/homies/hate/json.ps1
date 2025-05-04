@@ -28,11 +28,14 @@ function json {
         
         [Parameter(Position = 1)]
         [string]$InputData,
-        
+
         [Parameter(Position = 2)]
-        [string]$KeyProperty = "",
+        [string]$RootProperty = "",
         
         [Parameter(Position = 3)]
+        [string]$KeyProperty = "",
+        
+        [Parameter(Position = 4)]
         [string]$ValueProperty = "",
         
         [Parameter()]
@@ -80,7 +83,8 @@ function json {
                 $result = Show-JsonTable -JsonObject $jsonObject
                 if ($result) {
                     return Ok -Value $jsonObject -Message "JSON table displayed successfully"
-                } else {
+                }
+                else {
                     return Err "Failed to display JSON as table - structure may not be suitable"
                 }
             }
@@ -89,10 +93,11 @@ function json {
                 return Ok -Value $jsonObject -Message "JSON explorer completed successfully"
             }
             "chart" {
-                $result = Show-JsonBarChart -Data $jsonObject -KeyProperty $KeyProperty -ValueProperty $ValueProperty -MaxWidth $MaxWidth
+                $result = Show-JsonBarChart -Data $jsonObject -RootProperty $RootProperty -KeyProperty $KeyProperty -ValueProperty $ValueProperty -MaxWidth $MaxWidth
                 if ($result) {
                     return Ok -Value $jsonObject -Message "JSON chart displayed successfully"
-                } else {
+                }
+                else {
                     return Err "Failed to create chart from JSON - structure may not be suitable"
                 }
             }
@@ -116,7 +121,7 @@ function Convert-InputToJson {
         [string]$InputData
     )
     
-    Log-Debug "Attempting to convert input to JSON: $InputData"
+    #Log-Debug "Attempting to convert input to JSON: $InputData"
     
     # If input starts with { or [, treat as JSON string
     if ($InputData.Trim().StartsWith("{") -or $InputData.Trim().StartsWith("[")) {
@@ -441,14 +446,14 @@ function Invoke-JsonExplorer {
             foreach ($property in $properties) {
                 $value = $property.Value
                 $isPrimitive = $value -is [string] -or $value -is [int] -or $value -is [bool] -or 
-                              $value -is [double] -or $value -is [long] -or $value -is [DateTime] -or
-                              $null -eq $value
+                $value -is [double] -or $value -is [long] -or $value -is [DateTime] -or
+                $null -eq $value
                 
                 $options += @{
-                    Name       = $property.Name
-                    Value      = $value
-                    Type       = if ($null -ne $value) { $value.GetType().Name } else { "null" }
-                    IsPrimitive = $isPrimitive
+                    Name         = $property.Name
+                    Value        = $value
+                    Type         = if ($null -ne $value) { $value.GetType().Name } else { "null" }
+                    IsPrimitive  = $isPrimitive
                     DisplayValue = if ($isPrimitive) { Format-ValueForDisplay -Value $value } else { $null }
                 }
             }
@@ -457,24 +462,24 @@ function Invoke-JsonExplorer {
             for ($i = 0; $i -lt [Math]::Min($JsonObject.Count, 20); $i++) {
                 $item = $JsonObject[$i]
                 $isPrimitive = $item -is [string] -or $item -is [int] -or $item -is [bool] -or 
-                              $item -is [double] -or $item -is [long] -or $item -is [DateTime] -or
-                              $null -eq $item
+                $item -is [double] -or $item -is [long] -or $item -is [DateTime] -or
+                $null -eq $item
                 
                 $options += @{
-                    Name       = "[$i]"
-                    Value      = $item
-                    Type       = if ($null -ne $item) { $item.GetType().Name } else { "null" }
-                    IsPrimitive = $isPrimitive
+                    Name         = "[$i]"
+                    Value        = $item
+                    Type         = if ($null -ne $item) { $item.GetType().Name } else { "null" }
+                    IsPrimitive  = $isPrimitive
                     DisplayValue = if ($isPrimitive) { Format-ValueForDisplay -Value $item } else { $null }
                 }
             }
             
             if ($JsonObject.Count -gt 20) {
                 $options += @{
-                    Name        = "... (more items)"
-                    Value       = $null
-                    Type        = "info"
-                    IsPrimitive = $true
+                    Name         = "... (more items)"
+                    Value        = $null
+                    Type         = "info"
+                    IsPrimitive  = $true
                     DisplayValue = "total: $($JsonObject.Count) items"
                 }
             }
@@ -516,7 +521,8 @@ function Invoke-JsonExplorer {
                 
                 Write-Host "($($option.Type)) " -NoNewline -ForegroundColor $typeColor
                 Write-Host "$($option.DisplayValue)" -ForegroundColor $valueColor
-            } else {
+            }
+            else {
                 # Otherwise just show its type
                 Write-Host "($($option.Type))" -ForegroundColor $typeColor
             }
@@ -558,8 +564,16 @@ function Show-JsonBarChart {
         [Parameter(Mandatory = $true)]
         [object]$Data,
         
-        [string]$KeyProperty,
-        [string]$ValueProperty,
+        [Parameter(Position = 1)]
+        [string]$RootProperty = "sales",
+        
+        [Parameter(Position = 2)]
+        [string]$KeyProperty = "month",
+        
+        [Parameter(Position = 3)]
+        [string]$ValueProperty = "value",
+        
+        [Parameter(Position = 4)]
         [int]$MaxWidth = 50
     )
     
@@ -575,11 +589,10 @@ function Show-JsonBarChart {
         $chartData = @()
         
         # Check if data is a direct object with a 'sales' property
-        if ($Data -is [PSCustomObject] -and $Data.PSObject.Properties['sales']) {
-            $salesData = $Data.sales
-            
+        if ($Data -is [PSCustomObject] -and $Data.PSObject.Properties[$RootProperty]) {
+            Log-Debug "Data is a PSCustomObject and has a '$RootProperty' property"
+            $salesData = $Data.$RootProperty
             if ($salesData -is [array] -or $salesData -is [System.Collections.ArrayList]) {
-                
                 # Process each item to extract chart data
                 foreach ($item in $salesData) {
                     if ($item -is [PSCustomObject]) {
@@ -604,8 +617,10 @@ function Show-JsonBarChart {
             }
         }
         else {
+            Log-Debug "Data is not a PSCustomObject, checking if it's an array"
             # If data is already an array, try to use it directly
             if ($Data -is [array] -or $Data -is [System.Collections.ArrayList]) {
+                Log-Debug "Data is an array, processing items"  
                 foreach ($item in $Data) {
                     if ($item -is [PSCustomObject]) {
                         # Try to get key and value properties
@@ -629,7 +644,9 @@ function Show-JsonBarChart {
             }
             # If data is a simple object, try to use its properties directly
             elseif ($Data -is [PSCustomObject]) {
+                Log-Debug "Data is a PSCustomObject, processing properties"
                 foreach ($prop in $Data.PSObject.Properties) {
+                    Log-Debug "Processing property: $($prop.Name)"
                     if ($null -ne $prop.Value) {
                         try {
                             $numericValue = [double]$prop.Value
@@ -659,12 +676,23 @@ function Show-JsonBarChart {
         Write-Host "Chart Visualization:" -ForegroundColor Cyan
         Write-Host "----------------------------------------" -ForegroundColor Gray
         
+        # Find the maximum key length
+        $maxKeyLength = 0
+        foreach ($item in $chartData) {
+            if ($item.Key.Length -gt $maxKeyLength) {
+                $maxKeyLength = $item.Key.Length
+            }
+        }
+
         foreach ($item in $chartData) {
             $barLength = [Math]::Ceiling(($item.Value / $maxValue) * $MaxWidth)
             $bar = "█" * $barLength
             
+            # Use string formatting to ensure consistent width
+            $formattedKey = "{0,-$maxKeyLength}" -f $item.Key
+            
             # Display the item
-            Write-Host "$($item.Key): " -NoNewline -ForegroundColor White
+            Write-Host "$formattedKey : " -NoNewline -ForegroundColor White
             Write-Host "$bar" -NoNewline -ForegroundColor Cyan
             Write-Host " $($item.Value)" -ForegroundColor Yellow
         }
@@ -693,7 +721,8 @@ function Format-JsonWithTags {
         # Convert to string if it's an object
         $jsonString = if ($JsonObject -is [string]) {
             $JsonObject
-        } else {
+        }
+        else {
             $JsonObject | ConvertTo-Json -Depth $Depth
         }
         
