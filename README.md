@@ -505,6 +505,72 @@ Features:
 
 ---
 
+## 😹 Fun Stuff
+
+### 🖼️ ASCII Art Converter
+
+Convert any image into ASCII art that displays in your terminal!
+
+### Usage
+
+```powershell
+# Basic usage
+all my homies luv ascii "path/to/image.jpg"
+
+# Custom width
+all my homies luv ascii "./logo.png" -Width 120
+
+# Inverted colors (dark background)
+all my homies luv ascii "./photo.jpg" -Invert
+
+# Get help
+all my homies luv ascii -Help
+```
+
+### Parameters
+
+- `ImagePath` - Path to the image file (supports jpg, png, gif, bmp)
+- `-Width` - Width of ASCII output in characters (default: 80)
+- `-Invert` - Invert the brightness mapping (useful for dark terminals)
+- `-Help` - Show help information
+
+### Features
+
+- Supports common image formats (JPG, PNG, GIF, BMP)
+- Maintains aspect ratio automatically
+- Adjustable output width
+- Invertible brightness mapping
+- Uses 10 levels of ASCII characters for detail
+
+### Character Palette
+
+The converter uses these characters from dark to light:
+```
+' ', '.', ':', '-', '=', '+', '*', '#', '%', '@'
+```
+
+When using `-Invert`, this order is reversed.
+
+### Examples
+
+```powershell
+# Convert a photo to ASCII art
+all my homies luv ascii "C:\Users\You\Pictures\photo.jpg"
+
+# Create a large ASCII version for a presentation
+all my homies luv ascii "./company-logo.png" -Width 150
+
+# Invert for dark terminal backgrounds
+all my homies luv ascii "./icon.gif" -Width 60 -Invert
+```
+
+### Technical Notes
+
+- Uses .NET System.Drawing for image processing
+- Automatically calculates height to maintain aspect ratio
+- Converts to grayscale by averaging RGB values
+- Maps brightness values to ASCII characters
+
 ## 🧱 Architecture
 
 - `core/`: Logging, result types, parser, pipeline support
