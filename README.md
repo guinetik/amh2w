@@ -304,6 +304,35 @@ all my homies install nvchad     # Install NvChad (Neovim config)
 all my homies install jabba      # Install Java version manager
 ```
 
+### 🔤 Nerd Fonts
+```powershell
+# List all available Nerd Fonts
+all my homies install nerdfonts list
+
+# Search for specific fonts
+all my homies install nerdfonts search "Cascadia"
+
+# Install a specific font (requires admin privileges)
+all my homies install nerdfonts install CascadiaCode
+
+# View release information
+all my homies install nerdfonts info
+
+# Get info about a specific font
+all my homies install nerdfonts info "CascadiaCode"
+
+# Force refresh cached data
+all my homies install nerdfonts list -ForceRefresh
+```
+
+Features:
+- List all available Nerd Fonts from the latest release
+- Search for fonts by name
+- Install fonts with automatic elevation prompt
+- View detailed information about fonts and releases
+- 24-hour caching of release data for performance
+- Automatic cleanup of temporary files after installation
+
 ---
 
 ## 🔐 Cryptographic Tools
