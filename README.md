@@ -315,6 +315,9 @@ all my homies install nerdfonts search "Cascadia"
 # Install a specific font (requires admin privileges)
 all my homies install nerdfonts install CascadiaCode
 
+# Set installed Nerd Font in Windows Terminal
+all my homies install nerdfonts use CascadiaCode
+
 # View release information
 all my homies install nerdfonts info
 
@@ -329,6 +332,7 @@ Features:
 - List all available Nerd Fonts from the latest release
 - Search for fonts by name
 - Install fonts with automatic elevation prompt
+- Set installed fonts in Windows Terminal (automatically backs up settings)
 - View detailed information about fonts and releases
 - 24-hour caching of release data for performance
 - Automatic cleanup of temporary files after installation
@@ -382,7 +386,7 @@ Features:
 
 ## 🔧 System Utilities
 
-AMH2W gives you system utilities under the `hate` namespace; because some things are just too annoying to deal with sober.
+AMH2W gives you system utilities to unpleasant stuff under the `hate` namespace; because some things are just too annoying to deal with sober.
 
 ### 📊 JSON Power Tools
 ```powershell
@@ -428,7 +432,34 @@ all my homies hate fetch "https://example.com/file.zip" -OutFile "download.zip" 
 all my homies hate fetch "https://api.example.com" -Headers "api-key=1234"  # Custom headers
 all my homies hate fetch "https://api.example.com" -Params "page=1,limit=10"  # Query parameters
 all my homies hate fetch "https://api.example.com" -Timeout 60  # Custom timeout
+all my homies hate fetch "https://example.com/file.zip" -OutFile "download.zip" -UseBits  # Use BITS for download
 ```
+
+### 📥 File Download Utility
+```powershell
+# Basic download
+all my homies download "https://example.com/file.zip"
+
+# Download with a custom filename
+all my homies download "https://example.com/file.zip" -OutFile "myfile.zip"
+
+# Use BITS for better performance (recommended for large files)
+all my homies download "https://example.com/largefile.iso" -UseBits
+
+# Show progress while downloading
+all my homies download "https://example.com/file.zip" -ShowProgress
+
+# Resume interrupted downloads (with BITS)
+all my homies download "https://example.com/largefile.iso" -UseBits -Resume
+```
+
+Features:
+- Optimized file downloads with BITS support
+- Automatic filename detection from URL
+- Progress display during downloads
+- Resume capability for interrupted downloads
+- Fallback to standard download if BITS fails
+- Detailed download statistics and speed reporting
 
 ### 📁 FTP Client
 ```powershell

@@ -554,6 +554,3 @@ function Optimize-TempFiles {
         return Err "Temporary files cleanup failed: $errorMessage"
     }
 }
-
-# Export the function
-Export-ModuleMember -Function optimize

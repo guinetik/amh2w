@@ -3,7 +3,7 @@
 
 function Ok {
     param($Value)
-    return @{ ok = $true; value = $Value }
+    return @{ ok = $true; value = $Value; message = $Message }
 }
 
 function Err {

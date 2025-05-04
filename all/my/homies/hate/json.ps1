@@ -724,8 +724,3 @@ function Format-JsonWithTags {
         return $false
     }
 }
-
-# Only run main if this script is NOT being dot-sourced
-if ($MyInvocation.InvocationName -ne '.' -and $MyInvocation.MyCommand.Name -eq 'json.ps1') {
-    json
-}

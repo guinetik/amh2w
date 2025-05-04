@@ -1,5 +1,5 @@
 ﻿# all/my/homies/hate/fetch.ps1
-# HTTP request utility with advanced features
+# HTTP request utility with advanced features including BITS download support
 
 # Examples:
 # Basic GET request
@@ -10,6 +10,9 @@
 
 # Download a file
 # all my homies hate fetch "https://example.com/file.zip" -OutFile "C:\Downloads\file.zip"
+
+# Download with BITS
+# all my homies hate fetch "https://example.com/file.zip" -OutFile "C:\Downloads\file.zip" -UseBits
 
 # Request with headers
 # all my homies hate fetch "https://api.example.com/data" -Headers "api-key=1234,content-type=application/json"
@@ -70,6 +73,9 @@ function fetch {
         
         [Parameter(Position = 12)]
         [switch]$NoPrint = $false,
+        
+        [Parameter(Position = 13)]
+        [switch]$UseBits = $false,
         
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
@@ -149,45 +155,109 @@ function fetch {
             }
         }
         
-        # Add output file if provided
+        # Handle file downloads differently
         if (-not [string]::IsNullOrWhiteSpace($OutFile)) {
-            $webParams.OutFile = $OutFile
-            Log-Info "Will save response to file: $OutFile"
-        }
-        
-        # Execute the request
-        Log-Info "Sending request..."
-        
-        $response = Invoke-WebRequest @webParams
-        
-        # Stop the clock and get elapsed time
-        $clockResult = Stop-Clock
-        
-        # Process the response
-        $statusCode = $response.StatusCode
-        $isSuccess = [int]$statusCode -ge 200 -and [int]$statusCode -lt 300
-        
-        if (-not [string]::IsNullOrWhiteSpace($OutFile)) {
-            # Get file info for downloaded file
-            $fileInfo = Get-Item $OutFile
-            $fileSize = $fileInfo.Length
-            $fileSizeFormatted = Format-ByteSize -Bytes $fileSize
-            
-            # Calculate download speed
-            $totalSeconds = [double]$clockResult.value.TotalSeconds
-            $downloadSpeedBps = $fileSize / $totalSeconds
-            $downloadSpeedFormatted = Format-ByteSize -Bytes $downloadSpeedBps
-            
-            $message = "Downloaded $fileSizeFormatted to $OutFile in $($clockResult.value.ElapsedTime) ($downloadSpeedFormatted/s)"
-            if ($isSuccess) {
-                Log-Success $message
+            # Use BITS if requested and available
+            if ($UseBits -and (Get-Command Start-BitsTransfer -ErrorAction SilentlyContinue)) {
+                try {
+                    Log-Info "Using BITS for download..."
+                    
+                    # Ensure destination directory exists
+                    $outDir = Split-Path -Parent $OutFile
+                    if (-not (Test-Path $outDir)) {
+                        New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+                    }
+                    
+                    # Create a unique job name
+                    $jobName = "AMH2W_" + [guid]::NewGuid().ToString("N").Substring(0, 8)
+                    
+                    # Start BITS transfer
+                    $bitsJob = Start-BitsTransfer -Source $webParams.Uri -Destination $OutFile -DisplayName $jobName -Asynchronous
+                    
+                    # Monitor progress
+                    while ($bitsJob.JobState -eq "Transferring" -or $bitsJob.JobState -eq "Connecting") {
+                        $percentComplete = [int]($bitsJob.BytesTransferred / $bitsJob.BytesTotal * 100)
+                        Write-Progress -Activity "Downloading file" -Status "$percentComplete% Complete" -PercentComplete $percentComplete
+                        Start-Sleep -Milliseconds 500
+                    }
+                    
+                    # Complete the transfer
+                    Complete-BitsTransfer -BitsJob $bitsJob
+                    Write-Progress -Activity "Downloading file" -Completed
+                    
+                    # Get file info
+                    $fileInfo = Get-Item $OutFile
+                    $fileSize = $fileInfo.Length
+                    $fileSizeFormatted = Format-ByteSize -Bytes $fileSize
+                    
+                    # Calculate download speed
+                    $clockResult = Stop-Clock
+                    $totalSeconds = [double]$clockResult.value.TotalSeconds
+                    $downloadSpeedBps = $fileSize / $totalSeconds
+                    $downloadSpeedFormatted = Format-ByteSize -Bytes $downloadSpeedBps
+                    
+                    Log-Success "Downloaded $fileSizeFormatted to $OutFile in $($clockResult.value.ElapsedTime) ($downloadSpeedFormatted/s) using BITS"
+                    
+                    return Ok -Value @{
+                        StatusCode             = 200  # BITS doesn't provide status codes
+                        File                   = $OutFile
+                        FileSize               = $fileSize
+                        FileSizeFormatted      = $fileSizeFormatted
+                        Duration               = $clockResult.value.ElapsedTime
+                        DownloadSpeed          = $downloadSpeedBps
+                        DownloadSpeedFormatted = "$downloadSpeedFormatted/s"
+                        Clock                  = $clockResult.value
+                        Method                 = "BITS"
+                    } -Message "File downloaded successfully using BITS to $OutFile"
+                }
+                catch {
+                    Log-Warning "BITS transfer failed, falling back to standard download: $_"
+                    # Fall through to standard download
+                }
             }
-            else {
-                Log-Error $message
-            }
             
-            # Return result
-            if ($isSuccess) {
+            # Standard download (fallback or default)
+            try {
+                Log-Info "Using standard download..."
+                
+                # Ensure destination directory exists
+                $outDir = Split-Path -Parent $OutFile
+                if (-not (Test-Path $outDir)) {
+                    New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+                }
+                
+                # For file downloads, we'll use a different approach to get status code
+                # First, check if the resource exists with a HEAD request
+                $headParams = $webParams.Clone()
+                $headParams.Method = "HEAD"
+                $headParams.Remove("OutFile")
+                
+                try {
+                    $headResponse = Invoke-WebRequest @headParams
+                    $statusCode = $headResponse.StatusCode
+                }
+                catch {
+                    # If HEAD fails, assume 200 if file downloads successfully
+                    $statusCode = 200
+                }
+                
+                # Now download the file
+                $webParams.OutFile = $OutFile
+                Invoke-WebRequest @webParams
+                
+                # Get file info
+                $fileInfo = Get-Item $OutFile
+                $fileSize = $fileInfo.Length
+                $fileSizeFormatted = Format-ByteSize -Bytes $fileSize
+                
+                # Calculate download speed
+                $clockResult = Stop-Clock
+                $totalSeconds = [double]$clockResult.value.TotalSeconds
+                $downloadSpeedBps = $fileSize / $totalSeconds
+                $downloadSpeedFormatted = Format-ByteSize -Bytes $downloadSpeedBps
+                
+                Log-Success "Downloaded $fileSizeFormatted to $OutFile in $($clockResult.value.ElapsedTime) ($downloadSpeedFormatted/s)"
+                
                 return Ok -Value @{
                     StatusCode             = $statusCode
                     File                   = $OutFile
@@ -197,13 +267,28 @@ function fetch {
                     DownloadSpeed          = $downloadSpeedBps
                     DownloadSpeedFormatted = "$downloadSpeedFormatted/s"
                     Clock                  = $clockResult.value
+                    Method                 = "Standard"
                 } -Message "File downloaded successfully to $OutFile"
             }
-            else {
-                return Err "Request failed with status code: $statusCode"
+            catch {
+                $clockResult = Stop-Clock
+                Log-Error "Download failed: $_"
+                return Err "Download failed: $_"
             }
         }
         else {
+            # Regular HTTP request (not file download)
+            Log-Info "Sending request..."
+            
+            $response = Invoke-WebRequest @webParams
+            
+            # Stop the clock and get elapsed time
+            $clockResult = Stop-Clock
+            
+            # Process the response
+            $statusCode = $response.StatusCode
+            $isSuccess = [int]$statusCode -ge 200 -and [int]$statusCode -lt 300
+            
             # Process the response content
             $contentLength = 0
             if ($null -ne $response.Content) {
@@ -374,9 +459,4 @@ function ConvertFrom-HeaderString {
     }
     
     return $headers
-}
-
-# Only run main if this script is NOT being dot-sourced
-if ($MyInvocation.InvocationName -ne '.' -and $MyInvocation.MyCommand.Name -eq 'fetch.ps1') {
-    fetch @PSBoundParameters
 }

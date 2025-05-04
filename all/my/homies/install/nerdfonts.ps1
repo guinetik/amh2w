@@ -2,7 +2,7 @@
     [CmdletBinding()]
     param(
         [Parameter(Position = 0)]
-        [ValidateSet("list", "install", "search", "info")]
+        [ValidateSet("list", "install", "search", "info", "use")]
         [string]$Action = "list",
         
         [Parameter(Position = 1)]
@@ -85,6 +85,14 @@
                 } else {
                     return Show-FontInfo -ReleaseInfo $releaseInfo -FontName $FontName
                 }
+            }
+            
+            "use" {
+                if ([string]::IsNullOrWhiteSpace($FontName)) {
+                    Log-Error "Please provide a font name to use"
+                    return Err "Font name required"
+                }
+                return Use-NerdFont -FontName $FontName
             }
             
             default {
@@ -255,11 +263,8 @@ function Install-NerdFont {
         $zipFilePath = "$env:TEMP\$($fontAsset.name)"
         $extractPath = "$env:TEMP\$fontBaseName"
 
-        # Use the homies hate fetch utility to download
-        $scriptPath = Join-Path $PSScriptRoot "..\hate\fetch.ps1"
-        . $scriptPath
-        
-        $downloadResult = fetch -Url $fontAsset.browser_download_url -OutFile $zipFilePath
+        # Download with BITS for better performance
+        $downloadResult = download -Url $fontAsset.browser_download_url -OutFile $zipFilePath -UseBits
         
         if (-not $downloadResult.ok) {
             Log-Error "Failed to download font"
@@ -379,6 +384,116 @@ function Show-FontInfo {
     Write-Host ([DateTime]::Parse($fontAsset.created_at).ToString("yyyy-MM-dd HH:mm:ss"))
 
     return Ok $fontAsset
+}
+
+function Use-NerdFont {
+    param(
+        [Parameter(Mandatory)]
+        [string]$FontName
+    )
+
+    try {
+        # Find Windows Terminal settings file
+        $settingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+        
+        if (-not (Test-Path $settingsPath)) {
+            # Try the preview version
+            $settingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+        }
+        
+        if (-not (Test-Path $settingsPath)) {
+            Log-Error "Windows Terminal settings file not found"
+            return Err "Windows Terminal not installed or settings file not found"
+        }
+
+        # Check if font is installed
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+        $fontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families.Name
+        
+        # Common pattern for nerd font display names
+        $fontDisplayNames = @(
+            "$FontName NF",
+            "$FontName Nerd Font",
+            "$FontName Nerd Font Mono",
+            "$FontName NF Mono",
+            "$FontName NFM",
+            "${FontName}Nerd Font",
+            "${FontName}NerdFont",
+            "${FontName}NerdFontMono",
+            "${FontName}NFM",
+            $FontName
+        )
+        
+        $installedFontName = $null
+        foreach ($displayName in $fontDisplayNames) {
+            if ($fontFamilies -contains $displayName) {
+                $installedFontName = $displayName
+                Log-Info "Found installed font: $displayName"
+                break
+            }
+        }
+        
+        if (-not $installedFontName) {
+            Log-Error "Font '$FontName' not found in installed fonts"
+            Log-Info "You may need to install the font first using: all my homies install nerdfonts install $FontName"
+            return Err "Font not installed"
+        }
+
+        # Read settings
+        $settings = Get-Content $settingsPath -Raw | ConvertFrom-Json
+        
+        # Backup current settings
+        $backupPath = "$settingsPath.backup_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
+        Copy-Item $settingsPath $backupPath
+        Log-Info "Backed up settings to: $backupPath"
+        
+        # Update font face for all profiles
+        $updated = $false
+        
+        # Update the default profile if it exists
+        if ($settings.profiles.defaults) {
+            $settings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "font" -Value @{ face = $installedFontName } -Force
+            $updated = $true
+        }
+        else {
+            # Create defaults if it doesn't exist
+            if (-not $settings.profiles) {
+                $settings | Add-Member -MemberType NoteProperty -Name "profiles" -Value @{} -Force
+            }
+            $settings.profiles | Add-Member -MemberType NoteProperty -Name "defaults" -Value @{ font = @{ face = $installedFontName } } -Force
+            $updated = $true
+        }
+        
+        # Optionally update individual profiles
+        if ($settings.profiles.list) {
+            foreach ($profile in $settings.profiles.list) {
+                if (-not $profile.font) {
+                    $profile | Add-Member -MemberType NoteProperty -Name "font" -Value @{ face = $installedFontName } -Force
+                }
+                else {
+                    $profile.font.face = $installedFontName
+                }
+            }
+            $updated = $true
+        }
+        
+        if ($updated) {
+            # Save settings
+            $settings | ConvertTo-Json -Depth 100 | Set-Content $settingsPath -Force
+            Log-Success "Windows Terminal font set to: $installedFontName"
+            Log-Info "Please restart Windows Terminal for changes to take effect"
+            
+            return Ok "Font '$installedFontName' set in Windows Terminal"
+        }
+        else {
+            Log-Warning "No profiles found to update"
+            return Err "No profiles found to update"
+        }
+    }
+    catch {
+        Log-Error "Failed to set font in Windows Terminal: $_"
+        return Err "Failed to set font: $_"
+    }
 }
 
 function Format-ByteSize {

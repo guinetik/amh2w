@@ -91,12 +91,20 @@ function Invoke-Elevate {
         $cmdScript = "$Command; Write-Host '`nPress any key to continue...' -ForegroundColor Cyan; `$null = `$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')"
     }
     
-    # Start a new elevated PowerShell process
-    $arguments = "-NoProfile -ExecutionPolicy Bypass -Command `"$cmdScript`""
+    if ($PSVersionTable.PSVersion.Major -ge 6) {
+        # PowerShell Core (6.x+)
+        $psExecutable = "pwsh"
+    } else {
+        # Windows PowerShell 5.x
+        $psExecutable = "powershell"
+    }
+    
+    # Start a new elevated PowerShell process using the same version
+    $arguments = "-ExecutionPolicy Bypass -Command `"$cmdScript`""
     
     try {
-        Start-Process PowerShell -Verb RunAs -ArgumentList $arguments -Wait
-        Write-Verbose "Command executed with elevation"
+        Start-Process $psExecutable -Verb RunAs -ArgumentList $arguments -Wait
+        Write-Verbose "Command executed with elevation using $psExecutable"
     }
     catch {
         Write-Error "Failed to elevate command: $_"
@@ -108,8 +116,23 @@ function Invoke-VerboseCommand {
         [string]$Command
     )
 
+    # Detect current PowerShell version
+    $currentProcess = Get-Process -Id $PID
+    $psExecutable = $currentProcess.Path
+    
+    # If we couldn't get the path from the process, fall back to detecting version
+    if (-not $psExecutable) {
+        if ($PSVersionTable.PSVersion.Major -ge 6) {
+            # PowerShell Core (6.x+)
+            $psExecutable = "pwsh.exe"
+        } else {
+            # Windows PowerShell 5.x
+            $psExecutable = "powershell.exe"
+        }
+    }
+
     $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = "powershell.exe"
+    $psi.FileName = $psExecutable
     $psi.Arguments = "-NoProfile -Command $Command"
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true

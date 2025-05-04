@@ -90,6 +90,11 @@
       "name": "starship",
       "description": "Install Starship cross-shell prompt",
       "command": "winget install starship"
+    },
+    {
+      "name": "zoxide",
+      "description": "Install Zoxide",
+      "command": "winget install -e --id ajeetdsouza.zoxide"
     }
   ],
   "tooling": [

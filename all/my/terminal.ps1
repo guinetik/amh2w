@@ -25,12 +25,20 @@
         if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
             Write-Host "🚀 Opening Windows Terminal tab: $Title" -ForegroundColor Cyan
 
+            if ($PSVersionTable.PSVersion.Major -ge 6) {
+                # PowerShell Core (6.x+)
+                $psExecutable = "pwsh"
+            } else {
+                # Windows PowerShell 5.x
+                $psExecutable = "powershell"
+            }
+
             $argsz = @(
                 "-w", "0",
                 "nt",
-                "-p", "PowerShell",
+                "-p", $psExecutable,
                 "--title", $Title,
-                "powershell", "-NoExit", "-Command", $encoded
+                $psExecutable, "-NoExit", "-Command", $encoded
             )
 
             if ($admin) {

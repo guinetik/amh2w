@@ -153,8 +153,3 @@ function Get-VerboseMode {
     # that might check for global settings or environment variables
     return $VerbosePreference -eq "Continue"
 }
-
-# Only run main if this script is NOT being dot-sourced
-if ($MyInvocation.InvocationName -ne '.' -and $MyInvocation.MyCommand.Name -eq 'clock.ps1') {
-    clock @PSBoundParameters
-}

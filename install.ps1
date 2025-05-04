@@ -3,7 +3,7 @@
 
 [CmdletBinding()]
 param(
-    [string]$InstallPath = "$HOME\Documents\WindowsPowerShell\Modules\AMH2W"
+    [string]$InstallPath = $(($env:PSModulePath -split ';')[0] + "\AMH2W")
 )
 
 $ErrorActionPreference = 'Stop'

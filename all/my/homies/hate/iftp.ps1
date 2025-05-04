@@ -527,6 +527,3 @@ function Test-Rfs {
         return Err -Message "Connection test failed: $_"
     }
 }
-
-# Export only the main function
-Export-ModuleMember -Function iftp
