@@ -40,9 +40,14 @@ function jabba {
         
         # Download the installer script to a temporary file
         $tempFile = [System.IO.Path]::GetTempFileName() + ".ps1"
-        $webClient = New-Object System.Net.WebClient
-        $webClient.DownloadFile("https://github.com/Jabba-Team/jabba/raw/main/install.ps1", $tempFile)
+        $result = fetch "https://github.com/Jabba-Team/jabba/raw/main/install.ps1" -Out $tempFile
         
+        if(-not $result.ok) {
+            $errorMessage = $result.messsage
+            Log-Error "Failed to download Jabba installer script: $errorMessage"
+            return $result
+        }
+
         # Execute the installer script
         Log-Info "Executing Jabba installer script..."
         & $tempFile

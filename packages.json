@@ -29,6 +29,16 @@
       "name": "scoop-sudo",
       "description": "Install sudo tool for Scoop",
       "command": "scoop install sudo"
+    },
+    {
+      "name": "imagemagick",
+      "description": "Install ImageMagick: a powerful image processing tool",
+      "command": "scoop install main/imagemagick"
+    },
+    {
+      "name": "ffmpeg",
+      "description": "Install FFmpeg: a video processing library. I like to install it with choco.",
+      "command": "choco install ffmpeg -y"
     }
   ],
   "browsers": [

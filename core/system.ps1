@@ -156,3 +156,17 @@ function Invoke-VerboseCommand {
     $proc.WaitForExit()
     return $proc.ExitCode
 }
+
+function Invoke-Powershell {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Command,
+
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [object[]]$Arguments = @()
+    )
+    $Arguments += "-Command $Command"
+    $executable = if ($PSVersionTable.PSVersion.Major -ge 5) { "pwsh.exe" } else { "powershell.exe" }
+    Log-Info "Executing $Command with $executable"
+    Start-Process $executable -ArgumentList $Arguments
+}
