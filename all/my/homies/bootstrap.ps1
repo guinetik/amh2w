@@ -4,11 +4,7 @@
         [object]$Yolo = $false
     )
 
-    # Normalize Yolo
-    if ($Yolo -isnot [bool]) {
-        $truthy = @("true", "1", "yes", "y", "s", "sim", "on")
-        $Yolo = $truthy -contains $Yolo.ToString().ToLower()
-    }
+    $Yolo = Truthy $Yolo
 
     # Elevate if not admin
     if (-not (Test-IsAdmin)) {

@@ -11,13 +11,8 @@
         [Alias("Admin")]
         [object]$AsAdmin = $false
     )
-
-    $admin = $false
-    if ($AsAdmin -is [bool]) { $admin = $AsAdmin }
-    elseif ($AsAdmin -is [string]) {
-        $truthy = @("true", "1", "yes", "y", "+", "on")
-        $admin = $truthy -contains $AsAdmin.ToLower()
-    }
+    
+    $admin = Truthy $AsAdmin
 
     try {
         $encoded = "`"$Command`""

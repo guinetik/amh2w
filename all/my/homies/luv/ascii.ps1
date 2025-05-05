@@ -81,11 +81,7 @@ function ascii {
         [object]$Help
     )
 
-    if ($Invert -is [bool]) { $Invert = $Invert }
-    elseif ($Invert -is [string]) {
-        $truthy = @("true", "1", "yes", "y", "+", "on")
-        $Invert = $truthy -contains $Invert.ToLower()
-    }
+    $Invert = Truthy $Invert
     
     if ($Help) {
         Write-Host "`nASCII Art Converter - Transform images into text art"
