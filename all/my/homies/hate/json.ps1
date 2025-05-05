@@ -684,16 +684,23 @@ function Show-JsonBarChart {
             }
         }
 
+        $colorPallet = @("Red", "Green", "Blue", "Yellow", "Magenta", "Cyan", "DarkGray", "DarkRed", "DarkGreen", "DarkBlue", "DarkYellow", "DarkMagenta", "DarkCyan")
+        $colorQueue = [System.Collections.Queue]::new()
+        $colorPallet | ForEach-Object { $colorQueue.Enqueue($_) }
+        
         foreach ($item in $chartData) {
+            if ($colorQueue.Count -eq 0) {
+                # Refill queue once all colors used
+                $colorPallet | ForEach-Object { $colorQueue.Enqueue($_) }
+            }
+        
             $barLength = [Math]::Ceiling(($item.Value / $maxValue) * $MaxWidth)
             $bar = "█" * $barLength
-            
-            # Use string formatting to ensure consistent width
             $formattedKey = "{0,-$maxKeyLength}" -f $item.Key
-            
-            # Display the item
+            $color = $colorQueue.Dequeue()
+        
             Write-Host "$formattedKey : " -NoNewline -ForegroundColor White
-            Write-Host "$bar" -NoNewline -ForegroundColor Cyan
+            Write-Host "$bar" -NoNewline -ForegroundColor $color
             Write-Host " $($item.Value)" -ForegroundColor Yellow
         }
         
