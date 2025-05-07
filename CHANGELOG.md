@@ -10,6 +10,7 @@
 ### 💡 Fixed
 
 - 2025-05-07 | Fixes issues in install script
+- 2025-05-07 | Fixed the changelog script to generate markdown compatible files
 
 
 ### 🖌️ Various
@@ -17,19 +18,25 @@
 - 2025-05-07 | Updates readme
 - 2025-05-07 | Updating readme and changelog with new install instructions
 
+
+
 ## 0.0.2
 
 ### 🏭 Added
 
 - 2025-05-07 | Added new changelog script. all my homies wrk changelog
 
+
 ### 💡 Fixed
 
 - 2025-05-07 | Fixed install script
 
+
 ### 🖌️ Various
 
 - 2025-05-07 | Update changelog
+
+
 
 ## 0.0.1
 
@@ -95,3 +102,8 @@
 - 2025-04-30 | Updates the JSON api
 - 2025-04-30 | improves the version cmdlet
 - 2025-04-29 | Initial commit
+
+
+
+---
+Changelog as of 5/7/2025.
