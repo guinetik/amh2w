@@ -1,10 +1,17 @@
-﻿function usbs { 
+﻿function usbs {
     try {
-        Get-PnpDevice | Where-Object { $_.Class -eq "USB" } | Sort-Object -property FriendlyName | Format-Table -property FriendlyName, Status, InstanceId
-        exit 0 # success
+        $devices = Get-PnpDevice | Where-Object { $_.Class -eq "USB" } | Sort-Object -Property FriendlyName
+        if ($devices) {
+            $devices | Format-Table FriendlyName, DeviceID, Status -AutoSize | Out-String | Write-Host
+            return Ok $devices "USB devices found"
+        }
+        else {
+            Write-Host "⚠️ No USB devices found." -ForegroundColor Yellow
+            return Ok "No devices found"
+        }
     }
     catch {
-        "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
+        Write-Host "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
         exit 1
     }
 }

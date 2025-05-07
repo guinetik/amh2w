@@ -65,7 +65,7 @@ New-ModuleManifest -Path $manifestPath `
     -RootModule "AMH2W.psm1" `
     -ModuleVersion "0.1.0" `
     -Author "AMH2W Contributors" `
-    -Description "All My Homies Handle Windows - PowerShell utility library" `
+    -Description "All My Homies Hate Windows - PowerShell utility library" `
     -PowerShellVersion "5.1" `
     -FunctionsToExport @("all", "🤓")
 

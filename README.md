@@ -158,14 +158,23 @@ all my folders ssh              # Navigate to SSH config folder
 
 AMH2W provides detailed hardware information and management tools:
 
-### 🧠 CPU & Memory
+#### 🔍 System Information
+```powershell
+all my hardware scanpc            # Show system information
+all my hardware bluetooth         # Configure Bluetooth devices
+all my hardware usbs              # Configure USB devices
+
+```
+
+
+#### 🧠 CPU & Memory
 ```powershell
 all my hardware cpu               # Show CPU information and temperature
 all my hardware ram               # Display RAM information
 all my hardware power             # Show power/battery status
 ```
 
-### 💾 Storage & Devices
+#### 💾 Storage & Devices
 ```powershell
 all my hardware power             # Display power report
 all my hardware storage           # List storage devices
@@ -177,7 +186,6 @@ all my hardware bluetooth         # Display Bluetooth devices
 ```
 
 ---
-
 
 ## 🌐 Network Management
 
@@ -222,6 +230,9 @@ all my config updatepackages        # Update all installed packages
 
 ### 🐧 Linux & Development
 ```powershell
+all my config myshell            # Install PowerShell Core + Plugins from the Gallery. Configure Profile.
+all my config gitconfig          # Configure Git username and email, sets up aliases and default configs.
+all my config hyperv             # Enable Hyper-V
 all my config wslconfig          # Configure WSL
 all my homies install linux      # Install WSL with Ubuntu
 all my homies install distro     # Install specific WSL distro
@@ -489,6 +500,15 @@ all my homies hate windows optimize services    # Optimize Windows services
 all my homies hate windows optimize memory      # Optimize memory and page file
 all my homies hate windows optimize startup     # Manage startup programs
 all my homies hate windows optimize cleanup     # Clean temporary files
+all my homies hate windows optimize cache       # Clean cache, temporary files and logs
+```
+
+### Windows General Utilities
+```powershell
+all my homies hate windows telnetc enable      # Enable Telnet Client
+all my homies hate windows telnetc disable     # Disable Telnet Client
+all my homies hate windows hibernation         # Trigger hibernation
+all my homies hate windows godmode             # Create God Mode folder on desktop
 ```
 
 ### 🔒 Privacy & Security
