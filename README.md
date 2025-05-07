@@ -73,13 +73,13 @@ Or if you want a single command:
 pwsh -NoProfile -Command "Set-ExecutionPolicy Bypass -Scope CurrentUser -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://github.com/guinetik/amh2w/releases/latest/download/amh2w.ps1'))"
 ```
 
-(Replace `pwsh` with `powershell` if you are using PowerShell Core)
+(Replace `pwsh` with `powershell` if you are using Windows PowerShell)
 
 ### Locally Install:
 
 ```powershell
-git clone https://github.com/yourusername/AMH2W.git
-cd AMH2W
+git clone https://github.com/guinetik/amh2w.git
+cd amh2w
 ./install.ps1
 . $PROFILE
 ```
