@@ -163,7 +163,7 @@ function Write-CHANGELOG {
         }
         foreach ($tag in $orderedGroups) {
             Write-Host ""
-            PrintHRHeader -Text "$tag"
+            Write-Host "## $tag"
             $entries = $groupedCommits[$tag] | Sort-Object Date -Descending
             $categorized = @{
                 'added' = @()
@@ -191,15 +191,16 @@ function Write-CHANGELOG {
             }
             foreach ($cat in @('added','fixed','various')) {
                 if ($categorized[$cat].Count) {
-                    Write-Host "`n$($categoryEmojis[$cat])`n"
-                    foreach ($c in $categorized[$cat]) { Write-Host ("{0} | {1}" -f $c.Date, $c.Subject) }
-                    Write-HR -LeftMargin 0 -RightMargin 0 -Char "-"
+                    Write-Host "`n### $($categoryEmojis[$cat])`n"
+                    foreach ($c in $categorized[$cat]) { Write-Host ("- {0} | {1}" -f $c.Date, $c.Subject) }
+                    Write-Host ""
                 }
             }
             Write-Host ""
         }
         $Today = (Get-Date).ToShortDateString()
         Write-Host ""
+        Write-Host "---"
         Write-Host "Changelog as of $Today."
         exit 0 # success
     }
