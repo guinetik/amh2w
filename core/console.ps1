@@ -93,106 +93,114 @@ function Write-CHANGELOG {
     param([string]$RepoDir = "$PWD")
  
     try {
+        # Use UTF8 with BOM for emoji support
+        [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($true)
+        Log-Info "Writing CHANGELOG for $RepoDir"
         [system.threading.thread]::currentthread.currentculture = [system.globalization.cultureinfo]"en-US"
 
-        Write-Progress "(1/6) Searching for Git executable..."
+        Log-Info "(1/6) Searching for Git executable..."
         $null = (git --version)
         if ($lastExitCode -ne 0) { throw "Can't execute 'git' - make sure Git is installed and available" }
 
-        Write-Progress "(2/6) Checking local repository..."
+        Log-Info "(2/6) Checking local repository..."
         if (!(Test-Path "$RepoDir" -pathType container)) { throw "Can't access folder: $RepoDir" }
         $RepoDirName = (Get-Item "$RepoDir").Name
 
-        Write-Progress "(3/6) Fetching the latest commits..."
+        Log-Info "(3/6) Fetching the latest commits..."
         & git -C "$RepoDir" fetch --all --force --quiet
         if ($lastExitCode -ne 0) { throw "'git fetch --all' failed with exit code $lastExitCode" }
 
-        Write-Progress "(4/6) Listing all Git commit messages..."
-        $commits = (git -C "$RepoDir" log --boundary --pretty=oneline --pretty=format:%s | Sort-Object -u)
-
-        Write-Progress "(5/6) Sorting the Git commit messages..."
-        $new = @()
-        $improved = @()
-        $fixed = @()
-        $various = @()
-        foreach ($commit in $commits) {
-            if ($commit -like "New*") {
-                $new += $commit
-            }
-            elseif ($commit -like "Add*") {
-                $new += $commit
-            }
-            elseif ($commit -like "Create*") {
-                $new += $commit
-            }
-            elseif ($commit -like "Upda*") {
-                $improved += $commit
-            }
-            elseif ($commit -like "Adapt*") {
-                $improved += $commit
-            }
-            elseif ($commit -like "Improve*") {
-                $improved += $commit
-            }
-            elseif ($commit -like "Change*") {
-                $improved += $commit
-            }
-            elseif ($commit -like "Changing*") {
-                $improved += $commit
-            }
-            elseif ($commit -like "Fix*") {
-                $fixed += $commit
-            }
-            elseif ($commit -like "Hotfix*") {
-                $fixed += $commit
-            }
-            elseif ($commit -like "Bugfix*") {
-                $fixed += $commit
-            }
-            else {
-                $various += $commit
+        Log-Info "(4/6) Listing all Git commit messages with dates and tags..."
+        $commitLines = git -C "$RepoDir" log --pretty=format:"%ad|%s|%D" --date=short
+        $commits = @()
+        foreach ($line in $commitLines) {
+            $parts = $line -split '\|', 3
+            if ($parts.Length -eq 3) {
+                $date = $parts[0].Trim()
+                $subject = $parts[1].Trim()
+                $refs = $parts[2].Trim()
+                $tag = $null
+                if ($refs -match 'tag: ([^,\s]+)') {
+                    $tag = $matches[1]
+                }
+                $commits += [PSCustomObject]@{ Date = $date; Subject = $subject; Tag = $tag }
             }
         }
-        Write-Progress "(6/6) Listing all contributors..."
-        $contributors = (git -C "$RepoDir" log --format='%aN' | Sort-Object -u)
-        Write-Progress -completed " "
 
+        # Find all tags in order of appearance (oldest to newest)
+        $tags = @()
+        foreach ($c in $commits) {
+            if ($c.Tag -and ($tags -notcontains $c.Tag)) {
+                $tags += $c.Tag
+            }
+        }
+
+        # Assign each commit to the most recent tag at or before it, or 'Unreleased' if after the last tag
+        $currentTag = $null
+        $groupedCommits = @{}
+        foreach ($c in $commits) {
+            if ($c.Tag) { $currentTag = $c.Tag }
+            $group = if ($currentTag) { $currentTag } else { 'Unreleased' }
+            if (-not $groupedCommits.ContainsKey($group)) { $groupedCommits[$group] = @() }
+            $groupedCommits[$group] += $c
+        }
+
+        # Ensure 'Unreleased' is first, then tags in reverse order (newest first)
+        $orderedGroups = @()
+        if ($groupedCommits.ContainsKey('Unreleased')) { $orderedGroups += 'Unreleased' }
+        $orderedGroups += ($tags | Sort-Object -Descending)
+
+        Log-Info "(5/6) Sorting the Git commit messages by tag and category..."
+        # Define category keywords
+        $categoryKeywords = @{
+            'added'   = @('new', 'add', 'create', 'adds', 'added')
+            'fixed'   = @('caught', 'fix', 'hotfix', 'bugfix', 'flushed', 'improvement', 'improved', 'cleaned', 'fixed', 'fixes')
+        }
+        $categoryEmojis = @{
+            'added'   = '🏭 Added'
+            'fixed'   = '💡 Fixed'
+            'various' = '🖌️ Various'
+        }
+        foreach ($tag in $orderedGroups) {
+            Write-Host ""
+            PrintHRHeader -Text "$tag"
+            $entries = $groupedCommits[$tag] | Sort-Object Date -Descending
+            $categorized = @{
+                'added' = @()
+                'fixed' = @()
+                'various' = @()
+            }
+            foreach ($commit in $entries) {
+                $subject = $commit.Subject
+                $date = $commit.Date
+                $subjectLower = $subject.ToLower()
+                $matched = $false
+                foreach ($cat in @('added','fixed')) {
+                    foreach ($kw in $categoryKeywords[$cat]) {
+                        if ($subjectLower -like ("$kw*")) {
+                            $categorized[$cat] += [PSCustomObject]@{ Date = $date; Subject = $subject }
+                            $matched = $true
+                            break
+                        }
+                    }
+                    if ($matched) { break }
+                }
+                if (-not $matched) {
+                    $categorized['various'] += [PSCustomObject]@{ Date = $date; Subject = $subject }
+                }
+            }
+            foreach ($cat in @('added','fixed','various')) {
+                if ($categorized[$cat].Count) {
+                    Write-Host "`n$($categoryEmojis[$cat])`n"
+                    foreach ($c in $categorized[$cat]) { Write-Host ("{0} | {1}" -f $c.Date, $c.Subject) }
+                    Print-HR -LeftMargin 0 -RightMargin 0 -Char "-"
+                }
+            }
+            Write-Host ""
+        }
         $Today = (Get-Date).ToShortDateString()
-        Write-Output " "
-        Write-Output "Changelog of Repo '$RepoDirName'"
-        Write-Output "================================"
-        Write-Output " "
-        Write-Output "🚀 New Features"
-        Write-Output "---------------"
-        foreach ($c in $new) {
-            Write-Output "* $c"
-        }
-        Write-Output " "
-        Write-Output "🎉 Improved"
-        Write-Output "----------"
-        foreach ($c in $improved) {
-            Write-Output "* $c"
-        }
-        Write-Output " "
-        Write-Output "⚠️ Fixed"
-        Write-Output "--------"
-        foreach ($c in $fixed) {
-            Write-Output "* $c"
-        }
-        Write-Output " "
-        Write-Output "🔦 Various"
-        Write-Output "----------"
-        foreach ($c in $various) {
-            Write-Output "* $c"
-        }
-        Write-Output " "
-        Write-Output "🥇 Contributors"
-        Write-Output "---------------"
-        foreach ($c in $contributors) {
-            Write-Output "* $c"
-        }
-        Write-Output ""
-        Write-Output "Changelog as of $Today."
+        Write-Host ""
+        Write-Host "Changelog as of $Today."
         exit 0 # success
     }
     catch {
@@ -481,4 +489,22 @@ function Write-SuspenseText {
     # Ensure final state is correct and move to next line
     [Console]::SetCursorPosition($originalCursorLeft, $originalCursorTop)
     [Console]::WriteLine($Text)
+}
+
+function PrintHRHeader {
+    param(
+        [string]$Text,
+        [string]$Char = "=",
+        [int]$LeftMargin = 0,
+        [int]$RightMargin = 0
+    )
+    $width = $Host.UI.RawUI.WindowSize.Width
+    $lineLength = $width - $LeftMargin - $RightMargin
+    if ($lineLength -lt ($Text.Length + 2)) { $lineLength = $Text.Length + 2 }
+    $sideLen = [Math]::Floor(($lineLength - $Text.Length - 2) / 2)
+    $side = $Char * $sideLen
+    $extra = $lineLength - ($sideLen * 2) - $Text.Length - 2
+    $marginLeft = ' ' * $LeftMargin
+    $marginRight = ' ' * $RightMargin
+    Write-Host ("$marginLeft$side $Text $side$($Char * $extra)$marginRight")
 }
