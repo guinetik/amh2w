@@ -49,13 +49,40 @@ It's declarative, it's composable, it's readable, and it's built for scripting a
 
 ## 📦 Installation
 
+### Pre-requisites
+
+- PowerShell 5.1+
+- Works better with PowerShell Core (pwsh)
+- .NET 4.0+
+- Windows 7+
+- Administrator privileges
+
+Before installing make sure you have the appropriate execution policy set:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser
+```
+
+### Download and install the latest release:
+```powershell
+iex ((New-Object System.Net.WebClient).DownloadString('https://github.com/guinetik/amh2w/releases/latest/download/amh2w.ps1'))
+```
+
+Or if you want a single command:
+```powershell
+pwsh -NoProfile -Command "Set-ExecutionPolicy Bypass -Scope CurrentUser -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://github.com/guinetik/amh2w/releases/latest/download/amh2w.ps1'))"
+```
+
+(Replace `pwsh` with `powershell` if you are using PowerShell Core)
+
+### Locally Install:
+
 ```powershell
 git clone https://github.com/yourusername/AMH2W.git
 cd AMH2W
 ./install.ps1
 . $PROFILE
 ```
-
 ---
 
 ## 🚀 Example Usage
