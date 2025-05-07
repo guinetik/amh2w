@@ -98,5 +98,10 @@ TODO: Fix the pipeline so I can get rid of this.
 function Truthy {
     param($Value)
     $truthy = @("true", "1", "yes", "y", "s", "sim", "on")
-    return $truthy -contains $Value.ToString().ToLower()
+    try {
+        return $truthy -contains $Value.ToString().ToLower()
+    }
+    catch {
+        return $false
+    }
 }

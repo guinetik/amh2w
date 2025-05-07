@@ -117,7 +117,15 @@ function all {
         return Ok "Help displayed for namespace: $chain"
     }
     catch {
-        Log-Error "Error in command chain execution: $_"
+        # Handle unexpected exceptions
+        $errorMessage = "COMMAND CHAIN FAILED"
+        $line = $_.InvocationInfo.ScriptLineNumber
+        $stack = $_.Exception.StackTrace
+        $file = $_.InvocationInfo.ScriptName
+        Log-Error $errorMessage
+        Log-Error "Error in $file - Line $line"
+        Log-Error $_
+        Log-Error $stack
         return Err "Error in command chain execution: $_"
     }
 }

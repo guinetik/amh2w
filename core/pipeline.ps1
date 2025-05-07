@@ -221,11 +221,11 @@ function Invoke-CommandWithErrorHandling {
         
         # Ensure result is in the correct format (Ok/Err)
         if ($null -eq $result) {
-            $result = Ok -Value $null -Message "$CommandName completed successfully"
+            $result = Ok $null "$CommandName completed successfully"
         }
         elseif (-not ($result -is [Hashtable]) -or (-not $result.ContainsKey('ok'))) {
             # Wrap non-Ok/Err results in an Ok
-            $result = Ok -Value $result -Message "$CommandName completed successfully"
+            $result = Ok $result "$CommandName completed successfully"
         }
         
         # Record execution in history
@@ -243,12 +243,16 @@ function Invoke-CommandWithErrorHandling {
     }
     catch {
         # Handle unexpected exceptions
-        $errorMessage = "Error in $CommandName : $_"
+        $errorMessage = "Unhandled exception in $CommandName"
+        $line = $_.InvocationInfo.ScriptLineNumber
+        $stack = $_.Exception.StackTrace
+        $file = $_.InvocationInfo.ScriptName
         Log-Error $errorMessage
-        
+        Log-Error "Error in $file - Line $line"
+        Log-Error $_
+        #Log-Error $stack
         # Create error result
-        $errorResult = Err -Message $errorMessage
-        
+        $errorResult = Err $errorMessage $stack
         # Record in history
         $executionRecord = @{
             Command = $CommandName
@@ -413,8 +417,11 @@ function Invoke-Pipeline {
         catch {
             # Handle unexpected exceptions
             $errorMessage = "Unhandled exception in step $stepNumber : $_"
-            Log-Error $errorMessage -Context $Context
-            
+            Log-Error $errorMessage
+            $line = $_.InvocationInfo.ScriptLineNumber
+            Log-Error "Error on line $line"
+            Log-Error $_
+            return $false
             # Create error result with stack trace
             $errorResult = Err -Message $errorMessage
             

@@ -84,12 +84,12 @@ function namespace {
                     }
                     catch {
                         Write-Host "❌ Error: Command function '$arg' failed: $_" -ForegroundColor Red
-                        return
+                        return Err "Command function '$arg' failed: $_"
                     }
                 }
                 else {
                     Write-Host "❌ Error: Command function '$arg' not found, but script exists." -ForegroundColor Red
-                    return
+                    return Err "Command function '$arg' not found, but script exists."
                 }
             }
             else {

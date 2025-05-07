@@ -249,10 +249,10 @@ Log-Error "Failed to connect to server: $($_.Exception.Message)"
 #>
 function Log-Error {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true, HelpMessage="The message to log.")]
         [string]$Message,
         
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$false, HelpMessage="Optional hashtable containing context information or overrides for logging configuration.")]
         [hashtable]$Context=$null
     )
     

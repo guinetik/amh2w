@@ -23,8 +23,14 @@ if (-not $installScript) {
 }
 
 Write-Host "Running $($installScript.FullName)..."
+# Detect PowerShell edition and use the correct executable
+if ($PSVersionTable.PSEdition -eq 'Core') {
+    $psExe = 'pwsh'
+} else {
+    $psExe = 'powershell'
+}
 # Run the install script
-Start-Process pwsh -ArgumentList "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $installScript.FullName -Wait
+Start-Process $psExe -ArgumentList "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $installScript.FullName -Wait
 
 # Optional: Clean up
 Get-Content $zipPath | Out-Null  # Ensure file is not locked
