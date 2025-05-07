@@ -1,4 +1,35 @@
-﻿function fractals {
+﻿<#
+.SYNOPSIS
+Generates an animated Julia set fractal in the console.
+
+.DESCRIPTION
+Creates and displays an animated Julia set fractal directly in the console window,
+using ASCII characters to represent the fractal's escape-time values. The animation
+cycles through different zoom levels to create a pulsing effect.
+
+.OUTPUTS
+No explicit return value. The function displays the fractal animation directly in the console
+and runs in an infinite loop until manually terminated.
+
+.EXAMPLE
+all fractals
+# Starts the fractal animation in the console window
+
+.NOTES
+File: all/fractals.ps1
+Command: all fractals
+
+This function runs an infinite loop animation and can only be stopped by pressing Ctrl+C
+or otherwise terminating the process.
+
+The animation uses the console's full width and height for display and performs best
+in a reasonably sized console window. Characters from the ASCII set are used to
+represent different iteration counts of the Julia set algorithm.
+
+The fractals are rendered using an escape-time algorithm for the Julia set, with
+varying zoom levels to create the animation effect.
+#>
+function fractals {
 	function CalculateFractal([float]$left, [float]$top, [float]$xside, [float]$yside, [float]$zoom) { 
 		[int]$maxx = $rui.MaxWindowSize.Width
 		[int]$maxy = $rui.MaxWindowSize.Height

@@ -1,9 +1,52 @@
-﻿# version.ps1
-# Displays comprehensive system information similar to neofetch
+﻿<#
+.SYNOPSIS
+Displays comprehensive system information similar to the popular neofetch utility.
 
-# version.ps1
-# Displays comprehensive system information similar to neofetch
+.DESCRIPTION
+Gathers and presents detailed information about the Windows system including hardware specifications,
+OS details, uptime, disk usage, and network configuration in a visually appealing format with ASCII art.
 
+.NOTES
+File: all/my/homies/hate/windows/version.ps1
+Command: all my homies hate windows version
+
+.PARAMETER NoPrint
+If specified, suppresses console output and only returns the information object.
+Accepts: -NoPrint, $true, "true"
+
+.EXAMPLE
+all my homies hate windows version
+Displays system information with ASCII art and colored formatting.
+
+.EXAMPLE
+all my homies hate windows version -NoPrint
+Returns system information object without console output.
+
+.OUTPUTS
+An Ok result object containing a PSCustomObject with comprehensive system information.
+#>
+
+<#
+.SYNOPSIS
+Gathers and displays comprehensive system information.
+
+.DESCRIPTION
+Collects detailed information about the Windows system hardware and software configuration
+and displays it in a visually appealing format similar to neofetch, with ASCII art and color highlighting.
+
+.PARAMETER NoPrint
+If specified as '-NoPrint', '$true', or 'true', suppresses console output and only returns the information object.
+
+.OUTPUTS
+Returns an Ok result object containing a PSCustomObject with comprehensive system information,
+or an Err result object if an error occurs.
+
+.EXAMPLE
+version
+
+.EXAMPLE
+version -NoPrint
+#>
 function version {
     [CmdletBinding()]
     param(

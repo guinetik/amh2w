@@ -1,4 +1,41 @@
-﻿function namespace {
+﻿<#
+.SYNOPSIS
+    Namespace command dispatcher for AMH2W.
+.DESCRIPTION
+    Implements a namespace pattern (like a struct) for command dispatching. This script forwards the command chain and arguments to reach inner scripts or sub-namespaces, centralizing boilerplate logic for all top-level namespaces.
+    
+    This allows you to avoid repeating the same command chain parsing logic in every namespace script. Instead, each namespace script can simply call this function to handle forwarding and help display.
+.EXAMPLE
+    # Example usage in a namespace script (see all/my/homies/hate/windows/windows.ps1):
+    function windows {
+        [CmdletBinding()]
+        param(
+            [Parameter(ValueFromRemainingArguments = $true)]
+            [string[]]$Arguments
+        )
+        return namespace "windows" "all my homies hate windows" @Arguments
+    }
+.NOTES
+    Author: AMH2W Team
+    File: core/namespace.ps1
+#>
+
+<#!
+.SYNOPSIS
+    Dispatches commands within a namespace, forwarding to inner scripts or showing help.
+.DESCRIPTION
+    Forwards the command chain and arguments to reach inner scripts or sub-namespaces. If no further arguments are provided, displays help for the current namespace. This function is intended to be called from top-level namespace scripts to centralize command dispatching logic.
+.PARAMETER NamespaceName
+    The name of the current namespace (e.g., 'windows').
+.PARAMETER CommandChain
+    The full command chain up to this point (e.g., 'all my homies hate windows').
+.PARAMETER Arguments
+    Remaining arguments to process, which may include sub-namespaces or commands.
+.EXAMPLE
+    # In a namespace script:
+    namespace "windows" "all my homies hate windows" @Arguments
+#>
+function namespace {
     param(
         [Parameter(Mandatory = $true)]
         [string]$NamespaceName,

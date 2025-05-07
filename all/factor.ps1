@@ -1,4 +1,31 @@
-﻿function factor {
+﻿<#
+.SYNOPSIS
+Computes the prime factorization of a number.
+
+.DESCRIPTION
+Calculates and displays the prime factorization of an integer using trial division.
+The result is displayed in a readable format with the multiplication symbol (×) between factors.
+
+.PARAMETER Number
+The positive integer to factorize. Must be 2 or greater.
+
+.OUTPUTS
+An Ok result object containing an array of the prime factors, or an Err result object if factorization fails.
+
+.EXAMPLE
+all factor 12
+# Returns: 12 = 2 × 2 × 3
+
+.EXAMPLE
+all factor 123456789
+# Returns the prime factorization of a large number
+
+.NOTES
+File: all/factor.ps1
+Command: all factor
+Performance: Uses a simple trial division algorithm suitable for moderate-sized numbers.
+#>
+function factor {
     [CmdletBinding()]
     param(
         [Parameter(Position = 0, Mandatory = $true)]
@@ -7,7 +34,7 @@
 
     try {
         if ($Number -lt 2) {
-            return Err -Message "Can't factor numbers less than 2"
+            return Err "Can't factor numbers less than 2"
         }
 
         $n = $Number
@@ -29,9 +56,9 @@
         Write-Host "🧮 Factors of $Number :" -ForegroundColor Cyan
         Write-Host $asText -ForegroundColor Green
 
-        return Ok -Value $factors -Message "Prime factorization complete"
+        return Ok $factors "Prime factorization complete"
     }
     catch {
-        return Err -Message "Factorization failed: $_"
+        return Err "Factorization failed: $_"
     }
 }

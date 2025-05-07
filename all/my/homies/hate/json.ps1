@@ -1,5 +1,42 @@
-﻿# all/my/homies/hate/json.ps1
-# JSON handling utilities with various visualization options
+﻿<#
+.SYNOPSIS
+JSON handling utilities with various visualization options.
+
+.DESCRIPTION
+Provides a comprehensive set of tools for working with JSON data, including pretty printing,
+tree visualization, table formatting, interactive exploration, chart generation, and syntax highlighting.
+
+This module can handle JSON from various sources: strings, files, or URLs.
+
+.NOTES
+File: all/my/homies/hate/json.ps1
+CommandPath: all my homies hate json <action> <input> [options]
+
+.EXAMPLE
+all my homies hate json view "data.json"
+Fetches and pretty-prints the JSON file with syntax highlighting.
+
+.EXAMPLE
+all my homies hate json tree "https://jsonplaceholder.typicode.com/users"
+Fetches JSON from a URL and displays it as a tree structure.
+
+.EXAMPLE
+all my homies hate json table "https://jsonplaceholder.typicode.com/users"
+Fetches JSON from a URL and formats it as a table if it's a collection.
+
+.EXAMPLE
+all my homies hate json explore "https://jsonplaceholder.typicode.com/users"
+Launches an interactive explorer for the JSON data.
+
+.EXAMPLE
+all my homies hate json chart "stats.json" "categories" "name" "count"
+Creates a bar chart visualization using the specified root, key, and value properties.
+
+.EXAMPLE
+all my homies hate json highlight '{"name":"John","age":30}'
+Applies syntax highlighting to a JSON string.
+#>
+
 
 # Pretty print a JSON file
 #all my homies hate json view "C:\path\to\data.json"
@@ -19,6 +56,47 @@
 # Apply syntax highlighting to a JSON string
 #all my homies hate json highlight '{"name":"John","age":30,"city":"New York"}'
 
+<#
+.SYNOPSIS
+Processes JSON data with different visualization and exploration techniques.
+
+.DESCRIPTION
+Main function for processing JSON data, supporting various actions like view, tree, table, explore, chart, and highlight.
+Can handle JSON from strings, files, or URLs.
+
+.PARAMETER Action
+The action to perform: view, tree, table, explore, chart, or highlight.
+
+.PARAMETER InputData
+The JSON data to process as a string, file path, or URL.
+
+.PARAMETER RootProperty
+For chart action: The root property containing the collection to display (optional).
+
+.PARAMETER KeyProperty
+For chart action: The property to use for labels on the chart.
+
+.PARAMETER ValueProperty
+For chart action: The property to use for values on the chart.
+
+.PARAMETER MaxWidth
+Maximum width for chart visualization. Default: 50.
+
+.PARAMETER MaxDepth
+Maximum depth for nested objects when displaying as tree or view. Default: 10.
+
+.PARAMETER Arguments
+Additional arguments for specific actions.
+
+.OUTPUTS
+Returns an Ok or Err object according to the AMH2W result pattern.
+
+.EXAMPLE
+json view "data.json"
+
+.EXAMPLE
+json chart "stats.json" "items" "name" "value" -MaxWidth 60
+#>
 function json {
     [CmdletBinding()]
     param(
@@ -116,6 +194,25 @@ function json {
     }
 }
 
+<#
+.SYNOPSIS
+Converts various input formats to a JSON object.
+
+.DESCRIPTION
+Attempts to convert input from various sources (JSON string, file path, or URL) into a PowerShell object.
+
+.PARAMETER InputData
+The input to convert, which can be a JSON string, file path, or URL.
+
+.OUTPUTS
+A PowerShell object representing the JSON data, or $null if conversion fails.
+
+.NOTES
+This function handles three input types:
+- JSON strings (starting with { or [)
+- File paths (if the path exists on disk)
+- URLs (attempts to download content)
+#>
 function Convert-InputToJson {
     param(
         [string]$InputData
@@ -166,7 +263,25 @@ function Convert-InputToJson {
     }
 }
 
-# Pretty Print JSON with color formatting
+<#
+.SYNOPSIS
+Formats and displays JSON with color highlighting.
+
+.DESCRIPTION
+Converts a PowerShell object to formatted JSON and displays it with syntax highlighting for better readability.
+
+.PARAMETER JsonObject
+The JSON object to format and display.
+
+.PARAMETER Depth
+Maximum depth for nested objects. Default: 10.
+
+.OUTPUTS
+$true if formatting was successful, $false otherwise.
+
+.NOTES
+Uses PowerShell 7's built-in colorization if available, or a custom implementation for earlier versions.
+#>
 function Format-Json {
     param(
         [Parameter(Mandatory = $true)]
@@ -230,7 +345,31 @@ function Format-Json {
     }
 }
 
-# Tree-like structure visualization
+<#
+.SYNOPSIS
+Displays JSON data as a tree structure.
+
+.DESCRIPTION
+Recursively traverses a JSON object and displays it as a tree-like structure with indentation and branch indicators.
+
+.PARAMETER JsonObject
+The JSON object to display as a tree.
+
+.PARAMETER Indent
+Current indentation string (used in recursion). Default: empty string.
+
+.PARAMETER MaxDepth
+Maximum depth to display. Default: 10.
+
+.PARAMETER CurrentDepth
+Current depth in the recursive traversal. Default: 0.
+
+.OUTPUTS
+$true if tree display was successful, $false otherwise.
+
+.NOTES
+Uses different colors for different data types: strings (green), numbers (yellow), booleans (magenta), null (dark gray).
+#>
 function Show-JsonTree {
     param(
         [Parameter(Mandatory = $true)]
@@ -327,7 +466,22 @@ function Show-JsonTree {
     }
 }
 
-# Table-style visualization for collections
+<#
+.SYNOPSIS
+Displays JSON data in a table format.
+
+.DESCRIPTION
+Attempts to convert JSON data to a tabular format if the structure is suitable (array of similar objects).
+
+.PARAMETER JsonObject
+The JSON object to display as a table.
+
+.OUTPUTS
+$true if table display was successful, $false if the structure is not suitable for table display.
+
+.NOTES
+Works best with arrays of objects that have the same structure (similar property names).
+#>
 function Show-JsonTable {
     param(
         [Parameter(Mandatory = $true)]
@@ -379,7 +533,25 @@ function Show-JsonTable {
     }
 }
 
-# Helper function to format value for display in explorer
+<#
+.SYNOPSIS
+Formats a value for display in the JSON explorer.
+
+.DESCRIPTION
+Converts various data types to string representations suitable for display in the interactive explorer.
+
+.PARAMETER Value
+The value to format.
+
+.PARAMETER MaxLength
+Maximum length for string values before truncation. Default: 30.
+
+.OUTPUTS
+A string representation of the value.
+
+.NOTES
+Handles special formatting for null, strings, booleans, numbers, dates, arrays, and objects.
+#>
 function Format-ValueForDisplay {
     param(
         [object]$Value, 
@@ -425,7 +597,27 @@ function Format-ValueForDisplay {
     }
 }
 
-# Interactive JSON Explorer
+<#
+.SYNOPSIS
+Provides an interactive explorer for navigating JSON data.
+
+.DESCRIPTION
+Allows interactive browsing of JSON objects and arrays through a text-based interface.
+Users can navigate through the structure, view values, and return to previous levels.
+
+.PARAMETER JsonObject
+The JSON object to explore.
+
+.PARAMETER Path
+Current path in the JSON structure (used in recursion). Default: "root".
+
+.OUTPUTS
+$true to signal exit from the explorer, otherwise no specific output.
+
+.NOTES
+Uses different colors for different data types in the display.
+Supports navigation with numeric choices, 'B' to go back, and 'Q' to quit.
+#>
 function Invoke-JsonExplorer {
     param(
         [Parameter(Mandatory = $true)]
@@ -558,7 +750,34 @@ function Invoke-JsonExplorer {
     }
 }
 
-# Chart visualization for numeric data
+<#
+.SYNOPSIS
+Creates a simple bar chart visualization from JSON data.
+
+.DESCRIPTION
+Generates a console-based bar chart from numeric data in a JSON object.
+
+.PARAMETER Data
+The JSON data containing values to chart.
+
+.PARAMETER RootProperty
+The root property containing the collection to display. Default: "sales".
+
+.PARAMETER KeyProperty
+The property to use for labels on the chart. Default: "month".
+
+.PARAMETER ValueProperty
+The property to use for values on the chart. Default: "value".
+
+.PARAMETER MaxWidth
+Maximum width of the bars in the chart. Default: 50.
+
+.OUTPUTS
+$true if chart display was successful, $false otherwise.
+
+.NOTES
+This function attempts to be flexible with the input structure and will try different approaches to extract chartable data.
+#>
 function Show-JsonBarChart {
     param(
         [Parameter(Mandatory = $true)]
@@ -712,7 +931,25 @@ function Show-JsonBarChart {
     }
 }
 
-# Syntax highlighting with tags
+<#
+.SYNOPSIS
+Formats JSON with syntax highlighting tags.
+
+.DESCRIPTION
+Applies syntax highlighting to JSON by adding color tags for different elements.
+
+.PARAMETER JsonObject
+The JSON object or string to highlight.
+
+.PARAMETER Depth
+Maximum depth for nested objects when converting to string. Default: 10.
+
+.OUTPUTS
+$true if highlighting was successful, $false otherwise.
+
+.NOTES
+Uses different colors for different elements: property names (cyan), strings (green), numbers (yellow), booleans (magenta), null (gray).
+#>
 function Format-JsonWithTags {
     param(
         [Parameter(Mandatory = $true)]

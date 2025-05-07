@@ -1,5 +1,26 @@
-﻿# core/log.ps1
-# Enhanced logging system for AMH2W
+﻿<#
+.SYNOPSIS
+Enhanced logging system for the AMH2W PowerShell utility library.
+
+.DESCRIPTION
+Provides a comprehensive logging framework with multiple severity levels, console and file output options, 
+customizable colors and prefixes, and context-aware logging. This module forms the foundation of the 
+AMH2W diagnostic capabilities.
+
+.NOTES
+The logging system supports the following severity levels:
+- Info: General informational messages
+- Success: Operation completed successfully
+- Error: Operation failed
+- Warning: Potential issues that didn't prevent operation
+- Debug: Detailed information for troubleshooting (only shown in verbose mode)
+- Trace: Low-level execution tracing (only shown in verbose mode)
+
+Global configuration is stored in $global:AMH2W_LogConfig.
+
+File: core/log.ps1
+#>
+
 
 # Global logging configuration
 $global:AMH2W_LogConfig = @{
@@ -25,7 +46,18 @@ $global:AMH2W_LogConfig = @{
     }
 }
 
-# Ensures log directory exists if file logging is enabled
+<#
+.SYNOPSIS
+Initializes the logging system.
+
+.DESCRIPTION
+Creates the log directory if file logging is enabled. Called automatically when 
+the module is loaded.
+
+.NOTES
+This function is called automatically when the module is loaded and doesn't need
+to be called directly unless the log file path has changed.
+#>
 function Initialize-Logging {
     if ($global:AMH2W_LogConfig.LogToFile) {
         $logDir = Split-Path -Parent $global:AMH2W_LogConfig.LogFilePath
@@ -35,7 +67,32 @@ function Initialize-Logging {
     }
 }
 
-# Main logging function
+<#
+.SYNOPSIS
+Writes a log message with the specified severity level.
+
+.DESCRIPTION
+Core logging function that handles formatting, console output, and file logging.
+Used by the severity-specific logging functions like Log-Info, Log-Error, etc.
+
+.PARAMETER Level
+The severity level of the log message. Valid values are: Info, Success, Error, Warning, Debug, Trace.
+
+.PARAMETER Message
+The message to log.
+
+.PARAMETER Context
+Optional hashtable containing context information or overrides for logging configuration.
+
+.PARAMETER NoConsole
+If specified, the log message will not be displayed in the console (but will still be written to the log file if enabled).
+
+.EXAMPLE
+Write-Log -Level 'Info' -Message "Operation started"
+
+.EXAMPLE
+Write-Log -Level 'Error' -Message "Failed to connect" -Context @{ LogConfig = @{ Colors = @{ Error = 'DarkRed' } } }
+#>
 function Write-Log {
     param(
         [Parameter(Mandatory=$true)]
@@ -115,7 +172,25 @@ function Write-Log {
     }
 }
 
-# Shorthand logging functions
+<#
+.SYNOPSIS
+Logs an informational message.
+
+.DESCRIPTION
+Logs a message with the 'Info' severity level.
+
+.PARAMETER Message
+The message to log.
+
+.PARAMETER Context
+Optional hashtable containing context information or overrides for logging configuration.
+
+.EXAMPLE
+Log-Info "Starting application initialization"
+
+.EXAMPLE
+Log-Info "Processing file $filename" -Context @{ Verbose = $true }
+#>
 function Log-Info {
     param(
         [Parameter(Mandatory=$true)]
@@ -128,6 +203,22 @@ function Log-Info {
     Write-Log -Level 'Info' -Message $Message -Context $Context
 }
 
+<#
+.SYNOPSIS
+Logs a success message.
+
+.DESCRIPTION
+Logs a message with the 'Success' severity level, indicating an operation completed successfully.
+
+.PARAMETER Message
+The message to log.
+
+.PARAMETER Context
+Optional hashtable containing context information or overrides for logging configuration.
+
+.EXAMPLE
+Log-Success "Configuration saved successfully"
+#>
 function Log-Success {
     param(
         [Parameter(Mandatory=$true)]
@@ -140,6 +231,22 @@ function Log-Success {
     Write-Log -Level 'Success' -Message $Message -Context $Context
 }
 
+<#
+.SYNOPSIS
+Logs an error message.
+
+.DESCRIPTION
+Logs a message with the 'Error' severity level, indicating an operation failed.
+
+.PARAMETER Message
+The message to log.
+
+.PARAMETER Context
+Optional hashtable containing context information or overrides for logging configuration.
+
+.EXAMPLE
+Log-Error "Failed to connect to server: $($_.Exception.Message)"
+#>
 function Log-Error {
     param(
         [Parameter(Mandatory=$true)]
@@ -152,6 +259,22 @@ function Log-Error {
     Write-Log -Level 'Error' -Message $Message -Context $Context
 }
 
+<#
+.SYNOPSIS
+Logs a warning message.
+
+.DESCRIPTION
+Logs a message with the 'Warning' severity level, indicating a potential issue that didn't prevent the operation from completing.
+
+.PARAMETER Message
+The message to log.
+
+.PARAMETER Context
+Optional hashtable containing context information or overrides for logging configuration.
+
+.EXAMPLE
+Log-Warning "Connection timeout exceeded, retrying..."
+#>
 function Log-Warning {
     param(
         [Parameter(Mandatory=$true)]
@@ -164,6 +287,22 @@ function Log-Warning {
     Write-Log -Level 'Warning' -Message $Message -Context $Context
 }
 
+<#
+.SYNOPSIS
+Logs a debug message.
+
+.DESCRIPTION
+Logs a message with the 'Debug' severity level. These messages are only displayed when verbose logging is enabled.
+
+.PARAMETER Message
+The message to log.
+
+.PARAMETER Context
+Optional hashtable containing context information or overrides for logging configuration.
+
+.EXAMPLE
+Log-Debug "Variable state: $($variable | ConvertTo-Json -Depth 3)"
+#>
 function Log-Debug {
     param(
         [Parameter(Mandatory=$true)]
@@ -176,6 +315,22 @@ function Log-Debug {
     Write-Log -Level 'Debug' -Message $Message -Context $Context
 }
 
+<#
+.SYNOPSIS
+Logs a trace message.
+
+.DESCRIPTION
+Logs a message with the 'Trace' severity level for detailed execution flow tracking. These messages are only displayed when verbose logging is enabled.
+
+.PARAMETER Message
+The message to log.
+
+.PARAMETER Context
+Optional hashtable containing context information or overrides for logging configuration.
+
+.EXAMPLE
+Log-Trace "Entering function Process-Data"
+#>
 function Log-Trace {
     param(
         [Parameter(Mandatory=$true)]
@@ -188,7 +343,20 @@ function Log-Trace {
     Write-Log -Level 'Trace' -Message $Message -Context $Context
 }
 
-# Enable or disable verbose logging
+<#
+.SYNOPSIS
+Enables or disables verbose logging.
+
+.DESCRIPTION
+Controls whether Debug and Trace level messages are displayed.
+
+.PARAMETER Verbose
+Boolean value indicating whether verbose logging should be enabled.
+
+.EXAMPLE
+Set-LogVerbosity $true  # Enable verbose logging
+Set-LogVerbosity $false # Disable verbose logging
+#>
 function Set-LogVerbosity {
     param([bool]$Verbose)
     $global:AMH2W_LogConfig.Verbose = $Verbose
@@ -199,7 +367,23 @@ function Set-LogVerbosity {
     }
 }
 
-# Enable or disable file logging
+<#
+.SYNOPSIS
+Enables or disables logging to a file.
+
+.DESCRIPTION
+Controls whether log messages are written to a file in addition to being displayed in the console.
+
+.PARAMETER Enabled
+Boolean value indicating whether file logging should be enabled.
+
+.PARAMETER FilePath
+Optional path to the log file. If not specified, the default path from the global configuration is used.
+
+.EXAMPLE
+Set-LogToFile $true "$HOME\logs\myapp.log"  # Enable file logging to a custom path
+Set-LogToFile $false                        # Disable file logging
+#>
 function Set-LogToFile {
     param(
         [bool]$Enabled,

@@ -1,5 +1,19 @@
-﻿# system.ps1
-# Core system functions for handling elevation and other system-level operations
+﻿<#
+.SYNOPSIS
+Core system functions for handling elevation and other system-level operations.
+
+.DESCRIPTION
+This module provides functions for checking administrator privileges, elevating
+commands to run with higher privileges, managing registry settings, and executing
+commands in separate processes.
+
+.NOTES
+These functions are used throughout AMH2W to handle operations that may require
+administrator privileges or special execution environments.
+
+File: core/system.ps1
+#>
+
 
 function Test-IsAdmin {
     <#
@@ -111,6 +125,24 @@ function Invoke-Elevate {
     }
 }
 
+<#
+.SYNOPSIS
+Executes a command in a new process with output redirection.
+
+.DESCRIPTION
+Runs a PowerShell command in a separate process, capturing and displaying its output
+with proper color coding for standard output and errors.
+
+.PARAMETER Command
+The PowerShell command to execute.
+
+.EXAMPLE
+Invoke-VerboseCommand "Get-ChildItem C:\ -Recurse -ErrorAction SilentlyContinue"
+
+.NOTES
+This function is useful for running potentially disruptive commands in isolation
+from the current PowerShell session.
+#>
 function Invoke-VerboseCommand {
     param (
         [string]$Command
@@ -157,6 +189,27 @@ function Invoke-VerboseCommand {
     return $proc.ExitCode
 }
 
+<#
+.SYNOPSIS
+Launches a new PowerShell window with the specified command.
+
+.DESCRIPTION
+Starts a new PowerShell or PowerShell Core process (depending on the current environment)
+with the specified command and optional arguments.
+
+.PARAMETER Command
+The PowerShell command to execute in the new window.
+
+.PARAMETER Arguments
+Additional arguments to pass to the PowerShell executable.
+
+.EXAMPLE
+Invoke-Powershell "Get-ChildItem C:\ -Recurse"
+
+.NOTES
+This function automatically detects whether to use PowerShell (Windows PowerShell) or
+pwsh.exe (PowerShell Core) based on the current environment.
+#>
 function Invoke-Powershell {
     param (
         [Parameter(Mandatory = $true)]
@@ -171,6 +224,22 @@ function Invoke-Powershell {
     Start-Process $executable -ArgumentList $Arguments
 }
 
+<#
+.SYNOPSIS
+Ensures a registry path exists.
+
+.DESCRIPTION
+Checks if a registry path exists and creates it if it doesn't.
+
+.PARAMETER Path
+The registry path to check and potentially create.
+
+.EXAMPLE
+registry "HKCU:\Software\MyApp\Settings"
+
+.NOTES
+This is a helper function used by Set-RegistryValues and other registry-related functions.
+#>
 function registry {
     param([string]$Path)
     if (-not (Test-Path $Path)) {
@@ -178,6 +247,37 @@ function registry {
     }
 }
 
+<#
+.SYNOPSIS
+Sets multiple registry values at once.
+
+.DESCRIPTION
+Sets one or more registry values from a hashtable of property names and values.
+Can optionally create the registry path if it doesn't exist.
+
+.PARAMETER Path
+The registry path where values will be set.
+
+.PARAMETER PropertyValues
+A hashtable of property names and values to set. Values can be simple types or
+hashtables with 'Value' and optional 'Type' keys for explicit type specification.
+
+.PARAMETER EnsurePath
+If specified, creates the registry path if it doesn't exist.
+
+.EXAMPLE
+Set-RegistryValues -Path "HKCU:\Software\MyApp\Settings" -PropertyValues @{
+    "StringValue" = "text"
+    "NumericValue" = 42
+    "BinaryValue" = @{
+        Value = (,[byte[]](0x01, 0x02, 0x03))
+        Type = "Binary"
+    }
+} -EnsurePath
+
+.NOTES
+This function is used by many AMH2W commands that need to configure Windows settings.
+#>
 function Set-RegistryValues {
     [CmdletBinding()]
     param(

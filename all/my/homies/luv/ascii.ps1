@@ -46,28 +46,37 @@ function Convert-ImageToAscii {
         [int]$Width = 80,
         
         [Parameter(Mandatory = $false)]
-        [object]$Invert
+        [object]$Invert,
+
+        [Parameter(Mandatory = $false)]
+        [switch]$NoLog
     )
     
-    Log-Info "Starting image conversion: $ImagePath"
-    
-    # More varied ASCII character palette from dark to light for better gradients
-    $asciiChars = @(' ','.',':','-','=','+','*','!','%','#')
-    
-    # Invert is an object for a reason. It cannot be a switch. We need to check if it's truthy.
+    if (-not $NoLog) {
+        Log-Info "Starting image conversion: $ImagePath"
+    }
+    $asciiChars = @(' ', '.', ':', '-', '=', '+', '*', '!', '%', '@', '#')
+
     if ($Invert) {
         $Invert = Truthy $Invert
-        Log-Info "Inverting ASCII character palette"
+        if (-not $NoLog) {
+            Log-Info "Inverting ASCII character palette"
+        }
     }
 
-    if($Invert -eq $true) {
+    if ($Invert -eq $true) {
+        if (-not $NoLog) {
+            Log-Info "Inverting ASCII character palette"
+        }
         $asciiChars = $asciiChars | Sort-Object -Descending
     }
     
     try {
         # Check if image exists with more detailed error
         if (-not (Test-Path $ImagePath)) {
-            Log-Error "Image file not found: $ImagePath"
+            if (-not $NoLog) {
+                Log-Error "Image file not found: $ImagePath"
+            }
             return Err "Image file not found: $ImagePath. Please check the path and try again."
         }
         
@@ -78,14 +87,18 @@ function Convert-ImageToAscii {
             $img = [System.Drawing.Image]::FromFile((Resolve-Path $ImagePath).Path)
         }
         catch {
-            Log-Error "Failed to load image: $_"
+            if (-not $NoLog) {
+                Log-Error "Failed to load image: $_"
+            }
             return Err "Failed to load image: The file exists but may be corrupted or in an unsupported format."
         }
         
         # Check image dimensions
         if ($img.Width -le 0 -or $img.Height -le 0) {
             $img.Dispose()
-            Log-Error "Invalid image dimensions"
+            if (-not $NoLog) {
+                Log-Error "Invalid image dimensions"
+            }
             return Err "The image has invalid dimensions (width: $($img.Width), height: $($img.Height))."
         }
         
@@ -98,7 +111,9 @@ function Convert-ImageToAscii {
             $height = 1 # Ensure at least one line of output
         }
         
-        Log-Info "Resizing image to $Width x $height for ASCII conversion"
+        if (-not $NoLog) {
+            Log-Info "Resizing image to $Width x $height for ASCII conversion"
+        }
         
         # Resize image with better quality settings
         $resized = New-Object System.Drawing.Bitmap($Width, $height)
@@ -114,22 +129,20 @@ function Convert-ImageToAscii {
         # Convert to ASCII with improved brightness algorithm
         $asciiArt = [System.Collections.ArrayList]::new()
         
-        Log-Info "Converting pixels to ASCII characters"
+        if (-not $NoLog) {
+            Log-Info "Converting pixels to ASCII characters"
+        }
         
         for ($y = 0; $y -lt $height; $y++) {
             $line = ""
             for ($x = 0; $x -lt $Width; $x++) {
                 $pixel = $resized.GetPixel($x, $y)
                 $r, $g, $b = $pixel.R, $pixel.G, $pixel.B
-
-                # Improved perceptual brightness formula (matches human eye sensitivity better)
                 # Using the formula: 0.299R + 0.587G + 0.114B
-                $brightness = [math]::Round((0.299 * $r + 0.587 * $g + 0.114 * $b))
-                
+                $brightness = [math]::Round((0.299 * $r + 0.587 * $g + 0.114 * $b))                
                 # Map brightness to character index with better distribution
                 $index = [math]::Floor(($brightness / 255.0) * ($asciiChars.Length - 1))
                 $index = [math]::Max(0, [math]::Min($index, $asciiChars.Length - 1))
-                
                 $line += $asciiChars[$index]
             }
             [void]$asciiArt.Add($line)
@@ -140,24 +153,15 @@ function Convert-ImageToAscii {
         $resized.Dispose()
         $img.Dispose()
         
-        Log-Info "ASCII conversion complete: $($asciiArt.Count) lines generated"
-        
-        # Display ASCII art with coloring option for better visibility
-        if ($host.UI.SupportsVirtualTerminal) {
-            # Use a subtle gray color for better visibility in most terminals
-            Write-Host "`e[38;5;250m" -NoNewline
+        if (-not $NoLog) {
+            Log-Info "ASCII conversion complete: $($asciiArt.Count) lines generated"
         }
         
-        foreach ($line in $asciiArt) {
-            Write-Host $line
+        if (-not $NoLog) {
+            Show-AsciiArt -AsciiArt $asciiArt
         }
         
-        if ($host.UI.SupportsVirtualTerminal) {
-            # Reset color
-            Write-Host "`e[0m" -NoNewline
-        }
-        
-        return Ok -Value $asciiArt -Message "ASCII art generated successfully ($Width x $($asciiArt.Count))"
+        return Ok $asciiArt "ASCII art generated successfully ($Width x $($asciiArt.Count))"
     }
     catch {
         Log-Error "Exception during image conversion: $_"
@@ -168,5 +172,27 @@ function Convert-ImageToAscii {
         if ($null -ne $graphics) { $graphics.Dispose() }
         if ($null -ne $resized) { $resized.Dispose() }
         if ($null -ne $img) { $img.Dispose() }
+    }
+}
+
+function Show-AsciiArt {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Collections.ArrayList]$AsciiArt
+    )
+
+    # Display ASCII art with coloring option for better visibility
+    if ($host.UI.SupportsVirtualTerminal) {
+        # Use a subtle gray color for better visibility in most terminals
+        Write-Host "`e[38;5;250m" -NoNewline
+    }
+
+    foreach ($line in $asciiArt) {
+        Write-Host $line
+    }
+
+    if ($host.UI.SupportsVirtualTerminal) {
+        # Reset color
+        Write-Host "`e[0m" -NoNewline
     }
 }

@@ -1,4 +1,35 @@
-﻿function copi {
+﻿<#
+.SYNOPSIS
+Copies text to the clipboard and records it in clipboard history.
+
+.DESCRIPTION
+Copies the provided text to the system clipboard and adds it to the AMH2W clipboard
+history for later retrieval. Can handle both command-line arguments and pipeline input.
+
+.PARAMETER Arguments
+The text to copy to the clipboard. Multiple arguments are joined with spaces.
+
+.OUTPUTS
+An Ok result object with the copied content as the value, or an Err result object
+if the operation fails.
+
+.EXAMPLE
+all my clip copi "Hello, world!"
+# Copies "Hello, world!" to the clipboard
+
+.EXAMPLE
+all my clip copi This is a test
+# Copies "This is a test" to the clipboard
+
+.EXAMPLE
+Get-Content file.txt | all my clip copi
+# Copies the contents of file.txt to the clipboard
+
+.NOTES
+File: all/my/clip/copi.ps1
+Command: all my clip copi
+#>
+function copi {
     [CmdletBinding()]
     param(
         [Parameter(ValueFromRemainingArguments = $true)]

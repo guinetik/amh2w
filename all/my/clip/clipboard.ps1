@@ -1,9 +1,36 @@
-﻿# Global variable to store clipboard history
+﻿<#
+.SYNOPSIS
+Provides clipboard history management functionality.
+
+.DESCRIPTION
+This module implements a clipboard history system that allows users to view, retrieve,
+and manage their clipboard history. It maintains the last 50 clipboard items by default.
+
+.NOTES
+File: all/my/clip/clipboard.ps1
+Command: all my clip clipboard
+#>
+
+# Global variable to store clipboard history
 if (-not (Test-Path variable:global:AMH2W_CLIPBOARD_HISTORY)) {
     $global:AMH2W_CLIPBOARD_HISTORY = @()
     $global:AMH2W_CLIPBOARD_MAX_HISTORY = 50  # Maximum items to keep in history
 }
 
+<#
+.SYNOPSIS
+Adds an item to the clipboard history.
+
+.DESCRIPTION
+Adds a new item to the clipboard history, maintaining the maximum history size.
+Items are added to the beginning of the history (newest first).
+
+.PARAMETER Content
+The content to add to the clipboard history.
+
+.NOTES
+This is an internal helper function used by the clipboard commands.
+#>
 function Add-ClipboardHistory {
     param(
         [Parameter(Mandatory = $true)]
@@ -19,6 +46,37 @@ function Add-ClipboardHistory {
     }
 }
 
+<#
+.SYNOPSIS
+Manages and displays clipboard history.
+
+.DESCRIPTION
+Provides access to clipboard history, allowing users to view, retrieve, and clear
+their clipboard history. Without arguments, it displays the current clipboard history.
+
+.PARAMETER Arguments
+Command arguments that specify the action to perform.
+Supported actions: clear, get, count
+
+.OUTPUTS
+An Ok or Err result object containing the operation result.
+
+.EXAMPLE
+all my clip clipboard
+# Displays the current clipboard history
+
+.EXAMPLE
+all my clip clipboard clear
+# Clears the clipboard history
+
+.EXAMPLE
+all my clip clipboard get 2
+# Retrieves the second item from clipboard history and copies it to the clipboard
+
+.EXAMPLE
+all my clip clipboard count
+# Shows the number of items in the clipboard history
+#>
 function clipboard {
     [CmdletBinding()]
     param(

@@ -1,5 +1,42 @@
-﻿# all.ps1
-# Entry point for command chain
+﻿<#
+.SYNOPSIS
+Main entry point function for the AMH2W command chain system.
+
+.DESCRIPTION
+The core function of AMH2W that processes command chains and routes them to the appropriate
+commands or namespaces. This function is the primary entry point for all AMH2W commands
+and serves as the root of the command hierarchy.
+
+The function navigates through the command chain, identifying namespaces (directories) and
+commands (script files) until it either executes a command or displays help information
+for a namespace.
+
+.PARAMETER Arguments
+An array of strings representing the command chain and its arguments. The first arguments
+are treated as potential namespaces or commands, and the remaining arguments are passed
+to the final command if one is found.
+
+.OUTPUTS
+Returns an Ok or Err result object from the executed command, or an Ok result object with
+a message if help information was displayed.
+
+.EXAMPLE
+all my uptime
+# Executes the 'uptime' command in the 'my' namespace
+
+.EXAMPLE
+all my homies hate windows version
+# Navigates through multiple namespaces to execute the 'version' command
+
+.EXAMPLE
+all
+# With no arguments, displays help information for the root namespace
+
+.NOTES
+This function is the foundation of AMH2W's grammatical command structure, allowing commands
+to be written in a sentence-like format that is both intuitive and expressive.
+#>
+
 
 function all {
     [CmdletBinding()]

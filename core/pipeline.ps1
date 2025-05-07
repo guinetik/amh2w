@@ -1,5 +1,27 @@
-﻿# core/pipeline.ps1
-# Enhanced pipeline execution system for AMH2W
+﻿<#
+.SYNOPSIS
+Enhanced pipeline execution system for the AMH2W PowerShell utility library.
+
+.DESCRIPTION
+Provides a comprehensive pipeline execution system for AMH2W with error handling, logging,
+statistics, and context tracking. This module enables robust command chaining and multi-step
+execution flows while maintaining state and providing rich error handling.
+
+The pipeline system supports:
+- Global execution context with shared data and history
+- Ok/Err result pattern for consistent error handling
+- Automatic logging with configurable verbosity
+- Command history and performance statistics
+- Optional error handling with user prompting
+
+.NOTES
+File: core/pipeline.ps1
+Author: AMH2W Team
+
+This module is the backbone of AMH2W's execution model, allowing commands to be chained
+together while maintaining context and providing consistent error handling patterns.
+#>
+
 
 # Global pipeline context
 $global:AMH2W_PipelineContext = @{
@@ -16,6 +38,56 @@ $global:AMH2W_PipelineContext = @{
     CurrentNamespace = ""               # Current namespace
 }
 
+<#
+.SYNOPSIS
+    Enhanced pipeline execution system for AMH2W.
+.DESCRIPTION
+    Provides a set of functions and a global context for building, executing, and managing multi-step pipelines with error handling, logging, and statistics.
+    
+    This module is intended for use in AMH2W automation and scripting scenarios where robust, stepwise execution is required.
+.EXAMPLE
+    # Run a pipeline with three steps
+    $steps = @(
+        { Ok -Value 1 -Message 'Step 1' },
+        { Ok -Value 2 -Message 'Step 2' },
+        { Ok -Value 3 -Message 'Step 3' }
+    )
+    Invoke-Pipeline -Steps $steps
+.NOTES
+    Author: AMH2W Team
+    File: core/pipeline.ps1
+#>
+
+<#
+.SYNOPSIS
+Initializes or updates the global pipeline context.
+
+.DESCRIPTION
+Sets up the global pipeline context with options for prompting, error handling, logging, and shared data.
+The context provides a global state that is shared across commands in the pipeline.
+
+.PARAMETER PromptOnOptionalError
+Whether to prompt the user on optional errors (default: $true).
+
+.PARAMETER ContinueOnError
+Whether to continue on optional errors without prompting (default: $false).
+
+.PARAMETER LogConfig
+Hashtable for logging configuration (default: global log config).
+
+.PARAMETER Data
+Hashtable for shared data between steps (default: empty).
+
+.OUTPUTS
+Returns the global pipeline context hashtable.
+
+.EXAMPLE
+New-PipelineContext -PromptOnOptionalError $false -ContinueOnError $true
+
+.NOTES
+This function should be called before starting a pipeline execution flow to configure
+how errors and logging should be handled.
+#>
 function New-PipelineContext {
     param(
         [Parameter(Mandatory=$false)]
@@ -49,16 +121,46 @@ function New-PipelineContext {
     return $global:AMH2W_PipelineContext
 }
 
+<#
+.SYNOPSIS
+    Returns the current global pipeline context.
+.DESCRIPTION
+    Retrieves the hashtable representing the current pipeline context, including logging, data, and history.
+.EXAMPLE
+    $ctx = Get-PipelineContext
+#>
 function Get-PipelineContext {
     # Return the global pipeline context
     return $global:AMH2W_PipelineContext
 }
 
+<#
+.SYNOPSIS
+    Sets the verbosity of pipeline output.
+.DESCRIPTION
+    Enables or disables verbose output for pipeline execution.
+.PARAMETER Verbose
+    Boolean to enable or disable verbose output.
+.EXAMPLE
+    Set-PipelineVerbose -Verbose $true
+#>
 function Set-PipelineVerbose {
     param([bool]$Verbose)
     $global:AMH2W_PipelineContext.Verbose = $Verbose
 }
 
+<#
+.SYNOPSIS
+    Sets the current command and namespace in the pipeline context.
+.DESCRIPTION
+    Updates the pipeline context to reflect the command and namespace currently being executed.
+.PARAMETER Command
+    The name of the command being executed.
+.PARAMETER Namespace
+    The namespace of the command.
+.EXAMPLE
+    Set-CurrentCommand -Command 'Install' -Namespace 'Core'
+#>
 function Set-CurrentCommand {
     param(
         [string]$Command,
@@ -71,6 +173,34 @@ function Set-CurrentCommand {
     Log-Debug "Set current command: $Command in namespace: $Namespace"
 }
 
+<#
+.SYNOPSIS
+Executes a command with error handling and result formatting.
+
+.DESCRIPTION
+Runs a script block as a command, handling any exceptions and ensuring that the result
+is properly formatted as an Ok or Err object according to the AMH2W result pattern.
+This function also records execution history and performance metrics.
+
+.PARAMETER CommandBlock
+The script block to execute.
+
+.PARAMETER CommandName
+Name of the command (for logging and history). Default: "Command".
+
+.PARAMETER Arguments
+Arguments to pass to the script block.
+
+.OUTPUTS
+An Ok or Err result object from the command execution, or an Err object if an exception occurred.
+
+.EXAMPLE
+Invoke-CommandWithErrorHandling -CommandBlock { param($x) $x + 1 } -CommandName "Add" -Arguments @(5)
+
+.NOTES
+This function is used internally by the command system to execute commands in a safe
+and consistent manner, with proper error handling and result formatting.
+#>
 function Invoke-CommandWithErrorHandling {
     param(
         [Parameter(Mandatory=$true)]
@@ -134,6 +264,46 @@ function Invoke-CommandWithErrorHandling {
     }
 }
 
+<#
+.SYNOPSIS
+Executes a sequence of pipeline steps with error handling and logging.
+
+.DESCRIPTION
+Runs an array of script blocks as pipeline steps, handling errors according to the pipeline context
+settings. Supports optional errors with user prompting, verbose logging, and performance tracking.
+
+The pipeline execution follows these steps:
+1. For each step in the pipeline:
+   a. Execute the step and capture its result
+   b. If the result is a failure (Err):
+      - If it's optional, prompt the user or continue based on context settings
+      - If it's not optional, abort the pipeline and return the error
+   c. If the result is successful (Ok), continue to the next step
+2. After all steps complete successfully, return the final result
+
+.PARAMETER Steps
+Array of script blocks representing pipeline steps.
+
+.PARAMETER Context
+Pipeline context to use (default: global context).
+
+.PARAMETER PipelineName
+Name for the pipeline (for logging). Default: "Pipeline".
+
+.OUTPUTS
+Returns the result of the final step if successful, or an Err object if any step failed.
+
+.EXAMPLE
+$steps = @(
+    { Ok -Value "Step 1 data" },
+    { param($prev) Ok -Value "Step 2 processed $($prev.value)" }
+)
+Invoke-Pipeline -Steps $steps -PipelineName "MyProcess"
+
+.NOTES
+This function is the heart of AMH2W's pipeline execution system, allowing a series of steps
+to be executed with consistent error handling, logging, and state management.
+#>
 function Invoke-Pipeline {
     param(
         [Parameter(Mandatory=$true)]
@@ -274,6 +444,16 @@ function Invoke-Pipeline {
     }
 }
 
+<#
+.SYNOPSIS
+    Returns statistics about the most recent pipeline execution.
+.DESCRIPTION
+    Provides summary statistics such as total steps, completed, failed, and average duration from the pipeline context history.
+.PARAMETER Context
+    Pipeline context to use (default: global context).
+.EXAMPLE
+    Get-PipelineStats
+#>
 function Get-PipelineStats {
     param(
         [Parameter(Mandatory=$false)]

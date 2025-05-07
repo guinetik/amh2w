@@ -1,4 +1,40 @@
-﻿function pi {
+﻿<#
+.SYNOPSIS
+Calculates and displays π (pi) to a specified number of digits.
+
+.DESCRIPTION
+Implements an efficient algorithm to compute π to a high level of precision.
+The calculation uses arbitrary precision arithmetic with BigInteger to calculate
+π to the requested number of digits, displaying the result with a typewriter effect.
+
+.PARAMETER Digits
+The number of digits of π to calculate. Default is 1000.
+
+.OUTPUTS
+An Ok result object containing the calculated value of π as a string,
+or an Err result object if the calculation fails.
+
+.EXAMPLE
+all pi
+# Calculates π to the default 1000 digits
+
+.EXAMPLE
+all pi 100
+# Calculates π to 100 digits
+
+.EXAMPLE
+all pi 10000
+# Calculates π to 10,000 digits (will take some time)
+
+.NOTES
+File: all/pi.ps1
+Command: all pi
+
+This implementation uses a variation of the Spigot algorithm for calculating π.
+Performance degrades with higher digit counts; calculations above 5000 digits
+may take a noticeable amount of time.
+#>
+function pi {
     [CmdletBinding()]
     param(
         [Parameter(Position = 0)]

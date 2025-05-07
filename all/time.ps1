@@ -1,4 +1,20 @@
-﻿function Time-Check {
+﻿<#
+.SYNOPSIS
+Provides time-related utilities for checking, setting, and synchronizing time.
+
+.DESCRIPTION
+This module includes functions for interacting with system time and external time servers,
+including checking current time in different time zones, synchronizing with NTP servers,
+and manually setting the system time.
+
+.NOTES
+File: all/time.ps1
+Command: all time
+
+Many operations in this module require administrator privileges and will automatically
+request elevation when needed.
+#>
+function Time-Check {
     param(
         [string]$TimeServer = "time.windows.com"
     )

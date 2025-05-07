@@ -1,4 +1,36 @@
-﻿# dont show this to my math teacher 
+﻿<#
+.SYNOPSIS
+Generates prime numbers up to a specified limit.
+
+.DESCRIPTION
+Generates and displays all prime numbers up to a given limit using the Sieve of Eratosthenes
+algorithm. The function includes time measurement using the clock functionality.
+
+.PARAMETER UpTo
+The upper limit for prime number generation. Must be 2 or greater.
+
+.OUTPUTS
+An Ok result object containing an array of prime numbers up to the specified limit,
+or an Err result object if generation fails.
+
+.EXAMPLE
+all primes 100
+# Generates all primes up to 100
+
+.EXAMPLE
+all primes 1000
+# Generates all primes up to 1000
+
+.NOTES
+File: all/primes.ps1
+Command: all primes
+
+This implementation uses the Sieve of Eratosthenes algorithm, which is efficient for
+finding all primes up to a moderate limit. The algorithm has O(n log log n) time complexity.
+
+The function also starts and stops a clock to measure execution time, which is displayed
+separately from the prime numbers themselves.
+#>
 function primes {
     [CmdletBinding()]
     param(

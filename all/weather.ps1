@@ -1,4 +1,40 @@
-﻿function weather {
+﻿<#
+.SYNOPSIS
+Retrieves and displays current weather information for a specified location.
+
+.DESCRIPTION
+Fetches weather data from the wttr.in API and presents it in a formatted display
+with detailed information including temperature, precipitation, humidity, wind speed,
+and more. The data is presented both visually in the console and returned as a
+structured object.
+
+.PARAMETER Location
+The location to retrieve weather data for. Can be a city name, airport code, or geographic coordinates.
+
+.OUTPUTS
+An Ok result object containing a PSCustomObject with weather information properties,
+or an Err result object if the weather information could not be retrieved.
+
+.EXAMPLE
+all weather London
+# Displays current weather for London
+
+.EXAMPLE
+all weather "New York"
+# Displays current weather for New York City
+
+.EXAMPLE
+all weather Paris,France
+# Displays current weather for Paris, France
+
+.NOTES
+File: all/weather.ps1
+Command: all weather
+
+Requires internet connectivity to access the wttr.in API.
+The API may have rate limits or service interruptions that could affect reliability.
+#>
+function weather {
     [CmdletBinding()]
     param(
         [Parameter(
