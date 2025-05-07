@@ -1,9 +1,12 @@
-﻿# Set your GitHub repo and asset name here
-$repo = "guinetik/amh2w"
-$asset = "release.zip"
+﻿$Repo = "guinetik/amh2w"
+$Asset = "release.zip"
 
+if ($args.Count -ge 1) { $Repo = $args[0] }
+if ($args.Count -ge 2) { $Asset = $args[1] }
+
+Write-Host "Starting..."
 # Construct the download URL
-$downloadUrl = "https://github.com/$repo/releases/latest/download/$asset"
+$downloadUrl = "https://github.com/$Repo/releases/latest/download/$Asset"
 
 # Create a temp folder
 $tempDir = New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath() + [System.Guid]::NewGuid().ToString())
