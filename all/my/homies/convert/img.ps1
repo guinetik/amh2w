@@ -281,7 +281,6 @@ function Convert-ImageDirectory {
     
     # Get image files
     $extensions = @("*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.tiff", "*.tif")
-    $searchOption = if ($Recursive) { [System.IO.SearchOption]::AllDirectories } else { [System.IO.SearchOption]::TopDirectoryOnly }
     
     $files = @()
     foreach ($ext in $extensions) {

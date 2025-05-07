@@ -8,7 +8,7 @@
         Write-Host "`n UTC   HEADLINES             (source: " -noNewline
         Write-Host $URL -foregroundColor blue -noNewline
         Write-Host ")"
-        Write-Host " ---   ---------"
+        Write-Host " ------------"
         [int]$count = 1
         foreach ($item in $content.rss.channel.item) {
             $title = $item.title -replace "â", "'"
@@ -16,10 +16,9 @@
             Write-Host "$time  $title"
             if ($count++ -eq $maxLines) { break }
         }
-        exit 0 # success
+        return Ok
     }
     catch {
-        "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
-        exit 1
+        return Err "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
     }
 }

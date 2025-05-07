@@ -7,10 +7,9 @@
         }
         $null = New-Item @GodModeSplat
         "✅ God mode enabled - just double-click the new desktop icon."
-        exit 0 # success
+        return Ok
     }
     catch {
-        "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
-        exit 1
+        return Err "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
     }
 }

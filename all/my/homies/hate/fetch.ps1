@@ -82,7 +82,7 @@ function fetch {
     )
 
     try {
-        Log-Info "Preparing HTTP $Method request to $Url"
+        if (-not $NoPrint) { Log-Info "Preparing HTTP $Method request to $Url" }
         
         # If URL is missing, return error
         if ([string]::IsNullOrEmpty($Url)) {
@@ -160,7 +160,7 @@ function fetch {
             # Use BITS if requested and available
             if ($UseBits -and (Get-Command Start-BitsTransfer -ErrorAction SilentlyContinue)) {
                 try {
-                    Log-Info "Using BITS for download..."
+                    if (-not $NoPrint) { Log-Info "Using BITS for download..." }
                     
                     # Ensure destination directory exists
                     $outDir = Split-Path -Parent $OutFile
@@ -198,7 +198,7 @@ function fetch {
                     
                     Log-Success "Downloaded $fileSizeFormatted to $OutFile in $($clockResult.value.ElapsedTime) ($downloadSpeedFormatted/s) using BITS"
                     
-                    return Ok -Value @{
+                    return Ok @{
                         StatusCode             = 200  # BITS doesn't provide status codes
                         File                   = $OutFile
                         FileSize               = $fileSize
@@ -258,7 +258,7 @@ function fetch {
                 
                 Log-Success "Downloaded $fileSizeFormatted to $OutFile in $($clockResult.value.ElapsedTime) ($downloadSpeedFormatted/s)"
                 
-                return Ok -Value @{
+                return Ok @{
                     StatusCode             = $statusCode
                     File                   = $OutFile
                     FileSize               = $fileSize
@@ -370,7 +370,7 @@ function fetch {
             
             # Return result
             if ($isSuccess) {
-                return Ok -Value @{
+                return Ok @{
                     StatusCode             = $statusCode
                     Status                 = "$statusCode $($response.StatusDescription)"
                     Headers                = $response.Headers

@@ -70,7 +70,7 @@ function cpu {
         $tempLabel = ""
         $status = "✅"
 
-        if ($temp -ne $null) {
+        if ($null -ne $temp) {
             if ($temp -gt 80) { $tempLabel = "$temp°C TOO HOT"; $status = "🔥" }
             elseif ($temp -gt 50) { $tempLabel = "$temp°C HOT"; $status = "⚠️" }
             elseif ($temp -lt 0) { $tempLabel = "$temp°C TOO COLD"; $status = "🥶" }

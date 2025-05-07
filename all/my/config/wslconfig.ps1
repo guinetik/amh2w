@@ -60,7 +60,7 @@
         }
         "list" {
             # No extra args expected
-            List-WslDistros
+            Show-WslDistros
         }
         "enable" {
             # No extra args expected
@@ -69,7 +69,7 @@
     }
 }
 
-function List-WslDistros {
+function Show-WslDistros {
     try {
         Write-Host "🔍 Listing WSL distros..." -ForegroundColor Cyan
         wsl.exe --list --verbose

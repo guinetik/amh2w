@@ -214,7 +214,7 @@ function Invoke-Pipeline {
                     continue
                 } else {
                     # Handle non-optional failures
-                    Log-Error "Fatal error: $($result.error)" -Context $Context
+                    Log-Error "Fatal error: $($result)" -Context $Context
                     
                     # Show stack trace
                     if ($result.stack) {

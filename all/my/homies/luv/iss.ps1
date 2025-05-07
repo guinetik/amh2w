@@ -42,7 +42,7 @@ function iss {
             }
             "track" {
                 Write-Host "Track command received $Location"
-                return Track-ISS -UpdateInterval $UpdateInterval -UserLocation $Location
+                return Invoke-Track-ISS -UpdateInterval $UpdateInterval -UserLocation $Location
             }
             "crew" {
                 return Get-ISSCrew
@@ -54,7 +54,7 @@ function iss {
                 return Show-ISSMap
             }
             default {
-                return iss-help
+                return Show-ISSHelp
             }
         }
     }
@@ -139,7 +139,7 @@ function Get-ISSPosition {
     }
 }
 
-function Track-ISS {
+function Invoke-Track-ISS {
     param(
         [int]$UpdateInterval = 5,
         [PSCustomObject]$UserLocation
@@ -176,7 +176,7 @@ function Track-ISS {
     catch {
         Write-Host "`nTracking stopped." -ForegroundColor Yellow
         Write-Host "Error: $_" -ForegroundColor Red
-        Log-Error "Track-ISS error: $_"
+        Log-Error "Invoke-Track-ISS error: $_"
     }
     
     return Ok -Value $positions -Message "Tracked $($positions.Count) positions"
@@ -426,7 +426,7 @@ function Show-ISSMap {
     }
 }
 
-function iss-help {
+function Show-ISSHelp {
     Write-Host ""
     Write-Host "🛰️ ISS Tracker Commands" -ForegroundColor Cyan
     Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray

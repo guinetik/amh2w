@@ -294,25 +294,6 @@ function Optimize-Memory {
         # Get the system drive
         $systemDrive = $env:SystemDrive.Substring(0, 1)
         
-        # Disable automatic pagefile management first
-        Log-Info "  Disabling automatic pagefile management"
-        $computerSystem = Get-WmiObject -Class Win32_ComputerSystem -EnableAllPrivileges
-        $computerSystem.AutomaticManagedPagefile = $false
-        $computerSystem.Put() | Out-Null
-        
-        # Instead of using WMI to set pagefile, use registry method which is more reliable
-        Log-Info "  Setting pagefile via registry method"
-        $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
-        
-        # Format the pagefile string properly for registry
-        # Format: "drive:\\pagefile.sys min max"
-        $pageFileValue = "$systemDrive`:\pagefile.sys $pageFileSizeMB $pageFileSizeMB"
-        
-        # Set the registry value
-        Set-ItemProperty -Path $regPath -Name "PagingFiles" -Type MultiString -Value $pageFileValue
-        
-        Log-Info "  Pagefile settings will be applied after restart"
-        
         # Configure other memory optimization settings
         Log-Info "Optimizing filesystem cache settings..."
         $fsRegistry = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"

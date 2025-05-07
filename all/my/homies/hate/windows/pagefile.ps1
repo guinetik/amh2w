@@ -7,16 +7,38 @@
         # Elevate if needed
         if (-not (Test-IsAdmin)) {
             Invoke-Elevate -Command "all my homies hate windows pagesys" -Description "Change pagesys" -Prompt $true
-            return
+            return Ok "Elevated"
         }
 
         Log-Info "Disabling automatic pagefile management"
-        $cs = Get-WmiObject Win32_ComputerSystem -EnableAllPrivileges
-        $cs.AutomaticManagedPagefile = $false
-        $cs.Put() | Out-Null
+        try {
+            if ($PSVersionTable.PSVersion.Major -ge 6) {
+                $cs = Get-CimInstance -ClassName Win32_ComputerSystem
+                $cs | Set-CimInstance -Property @{AutomaticManagedPagefile = $false}
+            }
+            else {
+                # Traditional Windows PowerShell approach using WMI
+                $cs = Get-WmiObject Win32_ComputerSystem -EnableAllPrivileges
+                $cs.AutomaticManagedPagefile = $false
+                $cs.Put() | Out-Null
+            }
+        } catch {
+            Log-Error $_
+            return Err "Failed to disable automatic pagefile management: $_"
+        }
 
         Log-Info "Removing existing pagefile settings"
-        Get-WmiObject Win32_PageFileSetting | ForEach-Object { $_.Delete() | Out-Null }
+        try {
+            if ($PSVersionTable.PSVersion.Major -ge 6) {
+                
+            }
+            else {
+                Get-WmiObject Win32_PageFileSetting | ForEach-Object { $_.Delete() | Out-Null }
+            }
+        } catch {
+            Log-Error $_
+            return Err "Failed to remove existing pagefile settings: $_"
+        }
 
         $count = Read-Host "🔢 How many pagefiles do you want to configure?"
         $count = [int]$count

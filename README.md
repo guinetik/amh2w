@@ -11,13 +11,12 @@ AMH2W is not just a meme—it's a shell DSL where every word maps to a namespace
 ```powershell
 all my homies hate json tree "https://api.example.com/data"
 ```
-
 That line? It parses JSON from a URL and prints it as a tree.
 
 Need system info?
 
 ```powershell
-all my uptime
+all my homies hate windows wineofetch
 ```
 
 Install a CLI tool?
@@ -36,46 +35,13 @@ It's declarative, it's composable, it's readable, and it's built for scripting a
 
 ---
 
-## 🧠 Conceptual Model: Commands as Grammar
-
-AMH2W was born out of two personal needs:
-
-1. **To organize the chaos** — Like many devs, I had a mess of random PowerShell scripts strewn across projects, downloads folders, and forgotten Notepad++ tabs. AMH2W gives them a home — a clean, reusable hierarchy that makes scripting feel good.
-2. **To rebel** — Against the **tyranny** of `Get-Verbosity`, `Set-Tedium`, `Invoke-Overkill`. PowerShell's default grammar is a bureaucratic *Orwellian* nightmare. AMH2W throws that out and replaces it with something human: `all my homies hate windows`. Minimal, memetic, memorable.
-
-Yes, it's ironic. Yes, it's inspired by internet culture. But also — it works.
-
-
-Commands are structured like sentences. Each word is a layer of meaning:
-
-- **`all`** — The root of everything. This bootstraps the command grammar and resolves modules.
-- **`my`** — User-focused commands: uptime, shell access, browser launching.
-- **`homies`** — Extended utility layer. These are your tools, integrations, and contacts.
-- **`hate`** — The "adapter" that simplifies complexity: it makes things like JSON parsing or Windows telemetry easy to talk to.
-- **`windows`** — Everything Windows-related: telemetry, cleanup, versioning.
-- **`json`** — A power-tool for working with structured data interactively.
-
-You get a grammar tree like:
-
-```powershell
-all my homies hate json tree
-```
-Which breaks down into:
-- `all` — core
-- `my` — personal context
-- `homies` — utility toolkit
-- `hate` — adapter for simplified interaction
-- `json` — specific module (with `view`, `tree`, `table`, etc.)
-
-This isn't just clever naming—it makes discoverability and chaining commands intuitive.
-The point is to create a grammar-like syntax that is easy to remember and easy to use.
-
----
 
 ## 🎯 Features
 
 - **Natural command chaining** via nested namespaces like `all my homies`
 - **Result pattern** for `Ok`/`Err`-based error handling
+- **Unwrapping** of results for easy use
+- **Built in pipeline** for easy chaining of commands in a safe way
 - **Built-in logging system** with severity levels
 - **Modular structure** for clean extensions
 - **Pipeline-aware execution** like `result | map { it }`
@@ -117,7 +83,7 @@ all my homies hate windows version  # Show Windows version info
 
 AMH2W provides personal productivity and system management tools:
 
-### 📋 Clipboard Management
+### 📎 Clipboard Management
 
 ```powershell
 # Copy text to clipboard
@@ -142,10 +108,7 @@ all my clip clipboard count
 #### Features:
 - Copy text to clipboard
 - Paste from clipboard
-- View clipboard history
-- Clear clipboard history
-- Get specific item from history
-- Count items in history
+- Manage clipboard history
 
 ### ⏱️ Time Management
 ```powershell
@@ -155,7 +118,7 @@ all my clock status              # Check timer status
 all my uptime                    # Show system uptime
 ```
 
-### 🖥️ Terminal & Shell
+### 💻 Terminal & Shell
 ```powershell
 all my terminal "ls"             # Open command in new terminal
 all my terminal "ls" -Admin      # Open command as admin
@@ -189,7 +152,9 @@ all my folders ssh              # Navigate to SSH config folder
 
 ---
 
-## 💻 Hardware Management
+## 🖥️ Computer Tools
+
+### ⚙️ Hardware Management
 
 AMH2W provides detailed hardware information and management tools:
 
@@ -243,61 +208,21 @@ all my network dns flush          # Flush DNS cache
 all my network dns set 1.1.1.1    # Set DNS server
 ```
 
----
+## ✂️🔎🔨🔮🔫🔥🔪 Everyday utilities
 
+### 📦 Package & System Installation
 
-## 🪟 Windows Management Features
+AMH2W provides tools for installing and configuring package managers and system installations:
 
-AMH2W provides powerful tools for managing and optimizing Windows systems:
-
-### 🔧 System Optimization
 ```powershell
-all my homies hate windows optimize dev         # Apply all optimizations for development
-all my homies hate windows optimize performance # Optimize power and visual settings
-all my homies hate windows optimize services    # Optimize Windows services
-all my homies hate windows optimize memory      # Optimize memory and page file
-all my homies hate windows optimize startup     # Manage startup programs
-all my homies hate windows optimize cleanup     # Clean temporary files
-```
-
-### 🔒 Privacy & Security
-```powershell
-all my homies hate windows privacy              # Apply privacy hardening
-all my homies hate windows telemetry            # Disable telemetry and tracking
-all my homies hate windows debloater            # Install debloater from https://github.com/Raphire/Win11Debloat
-```
-
-Other stuff like disabling Cortana, disabling one drive and etc, you can use the debloater command to do it because the code for that is too much for this library to handle so we delegate that to the master powershell coders that maintain the debloater project.
-
-### 💾 System Configuration
-```powershell
-all my homies hate windows pagefile             # Configure virtual memory/pagefile
-all my homies hate windows version              # Show Windows version info neofetch style
-```
-
-Key features include:
-- **Performance Optimization**: Power plans, visual effects, and system services
-- **Privacy Hardening**: Disable telemetry, advertising ID, and data collection
-- **System Cleanup**: Temporary files, disk cleanup, and startup management
-- **Memory Management**: Pagefile configuration and memory optimization
-- **Service Control**: Manage Windows services for optimal performance
-
----
-
-
-
-## 📦 Package & System Installation
-
-AMH2W provides tools for managing software packages and system installations:
-
-### 📦 Package Managers
-```powershell
-all my homies install chocolatey  # Install Chocolatey package manager
-all my homies install scoop      # Install Scoop package manager
+all my homies install chocolatey    # Install Chocolatey package manager
+all my homies install scoop         # Install Scoop package manager
+all my config updatepackages        # Update all installed packages
 ```
 
 ### 🐧 Linux & Development
 ```powershell
+all my config wslconfig          # Configure WSL
 all my homies install linux      # Install WSL with Ubuntu
 all my homies install distro     # Install specific WSL distro
 all my homies install nvchad     # Install NvChad (Neovim config)
@@ -338,6 +263,52 @@ Features:
 - Automatic cleanup of temporary files after installation
 
 ---
+
+### 🖼️ Image Conversion
+
+Convert images between formats and resize them with ease.
+
+#### Usage
+
+```powershell
+# Basic conversion: input.png to jpg format
+all my homies convert img input.png jpg
+
+# Resize image to specific width (maintaining aspect ratio)
+all my homies convert img photo.jpg png 800 auto
+
+# Resize image to specific dimensions
+all my homies convert img input.bmp png output.png 1024 768
+
+# Convert with quality setting (for jpg/jpeg)
+all my homies convert img input.tiff jpg -Quality 90
+
+# Convert all png files in a folder to jpg
+all my homies convert img *.png jpg
+
+# Convert all images in a folder recursively
+all my homies convert img folder/ jpg -Recursive
+```
+
+#### Parameters
+
+- `InputFile` - Source image or pattern (required)
+- `Format` - Target format (jpg, png, etc.) (required)
+- `Output` - Output filename (optional)
+- `Width` - Target width in pixels or "auto" (default: "auto")
+- `Height` - Target height in pixels or "auto" (default: "auto")
+- `-Quality` - JPEG quality (1-100)
+- `-PreserveMetadata` - Keep image metadata during conversion
+- `-Recursive` - Process all subfolders when converting directories
+
+#### Features
+
+- Auto-detects and uses ImageMagick, FFmpeg or System.Drawing
+- Batch conversion with wildcards and directory processing
+- Auto-generated output filenames
+- Preserves aspect ratio with "auto" dimension
+- Preserves or strips metadata
+- Supports all common image formats
 
 ## 🔐 Cryptographic Tools
 
@@ -383,43 +354,10 @@ Features:
 - Preserves file extensions and metadata
 
 ---
-2
+
 ## 🔧 System Utilities
 
 AMH2W gives you system utilities to unpleasant stuff under the `hate` namespace; because some things are just too annoying to deal with sober.
-
-### 📊 JSON Power Tools
-```powershell
-all my homies hate json view data.json
-all my homies hate json tree "https://jsonplaceholder.typicode.com/users"
-all my homies hate json table "https://jsonplaceholder.typicode.com/users"
-all my homies hate json chart test.json month value
-all my homies hate json highlight '{"name":"John"}'
-```
-
-### 📦 File Compression & Extraction
-```powershell
-# Compress files and folders
-all my homies hate zipping zip "source.txt" "archive.zip"  # Compress to ZIP
-all my homies hate zipping zip "folder" "archive.zip"      # Compress folder to ZIP
-all my homies hate zipping zip "file.txt" "archive.gz"     # Compress to GZIP
-all my homies hate zipping zip "folder" "archive.tar.gz"   # Compress to TAR.GZ
-all my homies hate zipping zip "folder" "archive.rar"      # Compress to RAR (requires WinRAR)
-
-# Extract archives
-all my homies hate zipping unzip "archive.zip" "output"    # Extract ZIP
-all my homies hate zipping unzip "archive.gz" "output"     # Extract GZIP
-all my homies hate zipping unzip "archive.tar.gz" "output" # Extract TAR.GZ
-all my homies hate zipping unzip "archive.rar" "output"    # Extract RAR
-```
-
-Features:
-- Supports multiple formats: ZIP, GZIP, TAR.GZ, RAR
-- Automatically detects and uses available tools (7-Zip, WinRAR, tar)
-- Handles both files and directories
-- Smart destination path generation
-- Progress tracking and error handling
-- Fallback to built-in PowerShell commands when needed
 
 ### 🌐 HTTP Client
 ```powershell
@@ -505,13 +443,84 @@ Features:
 
 ---
 
+### 📊 JSON Power Tools
+```powershell
+all my homies hate json view data.json
+all my homies hate json tree "https://jsonplaceholder.typicode.com/users"
+all my homies hate json table "https://jsonplaceholder.typicode.com/users"
+all my homies hate json chart test.json month value
+all my homies hate json highlight '{"name":"John"}'
+```
+
+### 📦 File Compression & Extraction
+```powershell
+# Compress files and folders
+all my homies hate zipping zip "source.txt" "archive.zip"  # Compress to ZIP
+all my homies hate zipping zip "folder" "archive.zip"      # Compress folder to ZIP
+all my homies hate zipping zip "file.txt" "archive.gz"     # Compress to GZIP
+all my homies hate zipping zip "folder" "archive.tar.gz"   # Compress to TAR.GZ
+all my homies hate zipping zip "folder" "archive.rar"      # Compress to RAR (requires WinRAR)
+
+# Extract archives
+all my homies hate zipping unzip "archive.zip" "output"    # Extract ZIP
+all my homies hate zipping unzip "archive.gz" "output"     # Extract GZIP
+all my homies hate zipping unzip "archive.tar.gz" "output" # Extract TAR.GZ
+all my homies hate zipping unzip "archive.rar" "output"    # Extract RAR
+```
+
+Features:
+- Supports multiple formats: ZIP, GZIP, TAR.GZ, RAR
+- Automatically detects and uses available tools (7-Zip, WinRAR, tar)
+- Handles both files and directories
+- Smart destination path generation
+- Progress tracking and error handling
+- Fallback to built-in PowerShell commands when needed
+
+
+## 🪟 Windows Management Features
+
+AMH2W provides powerful tools for managing and optimizing Windows systems:
+
+### 🔧 System Optimization
+```powershell
+all my homies hate windows optimize dev         # Apply all optimizations for development
+all my homies hate windows optimize performance # Optimize power and visual settings
+all my homies hate windows optimize services    # Optimize Windows services
+all my homies hate windows optimize memory      # Optimize memory and page file
+all my homies hate windows optimize startup     # Manage startup programs
+all my homies hate windows optimize cleanup     # Clean temporary files
+```
+
+### 🔒 Privacy & Security
+```powershell
+all my homies hate windows privacy              # Apply privacy hardening
+all my homies hate windows telemetry            # Disable telemetry and tracking
+all my homies hate windows debloater            # Install debloater from https://github.com/Raphire/Win11Debloat
+```
+
+Other stuff like disabling Cortana, disabling one drive and etc, you can use the debloater command to do it because the code for that is too much for this library to handle so we delegate that to the master powershell coders that maintain the debloater project.
+
+### 💾 System Configuration
+```powershell
+all my homies hate windows pagefile             # Configure virtual memory/pagefile
+all my homies hate windows version              # Show Windows version info neofetch style
+```
+
+Key features include:
+- **Performance Optimization**: Power plans, visual effects, and system services
+- **Privacy Hardening**: Disable telemetry, advertising ID, and data collection
+- **System Cleanup**: Temporary files, disk cleanup, and startup management
+- **Memory Management**: Pagefile configuration and memory optimization
+- **Service Control**: Manage Windows services for optimal performance
+
+
 ## 😹 Fun Stuff
 
 ### 🖼️ ASCII Art Converter
 
 Convert any image into ASCII art that displays in your terminal!
 
-### Usage
+#### Usage
 
 ```powershell
 # Basic usage
@@ -527,14 +536,14 @@ all my homies luv ascii "./photo.jpg" -Invert
 all my homies luv ascii -Help
 ```
 
-### Parameters
+#### Parameters
 
 - `ImagePath` - Path to the image file (supports jpg, png, gif, bmp)
 - `-Width` - Width of ASCII output in characters (default: 80)
 - `-Invert` - Invert the brightness mapping (useful for dark terminals)
 - `-Help` - Show help information
 
-### Features
+#### Features
 
 - Supports common image formats (JPG, PNG, GIF, BMP)
 - Maintains aspect ratio automatically
@@ -542,7 +551,7 @@ all my homies luv ascii -Help
 - Invertible brightness mapping
 - Uses 10 levels of ASCII characters for detail
 
-### Character Palette
+#### Character Palette
 
 The converter uses these characters from dark to light:
 ```
@@ -551,7 +560,7 @@ The converter uses these characters from dark to light:
 
 When using `-Invert`, this order is reversed.
 
-### Examples
+#### Examples
 
 ```powershell
 # Convert a photo to ASCII art
@@ -564,12 +573,50 @@ all my homies luv ascii "./company-logo.png" -Width 150
 all my homies luv ascii "./icon.gif" -Width 60 -Invert
 ```
 
-### Technical Notes
+#### Technical Notes
 
 - Uses .NET System.Drawing for image processing
 - Automatically calculates height to maintain aspect ratio
 - Converts to grayscale by averaging RGB values
 - Maps brightness values to ASCII characters
+
+--- 
+
+## 🧠 Conceptual Model: Commands as Grammar
+
+AMH2W was born out of two personal needs:
+
+1. **To organize the chaos** — Like many devs, I had a mess of random PowerShell scripts strewn across projects, downloads folders, and forgotten Notepad++ tabs. AMH2W gives them a home — a clean, reusable hierarchy that makes scripting feel good.
+2. **To rebel** — Against the **tyranny** of `Get-Verbosity`, `Set-Tedium`, `Invoke-Overkill`. PowerShell's default grammar is a bureaucratic *Orwellian* nightmare. AMH2W throws that out and replaces it with something human: `all my homies hate windows`. Minimal, memetic, memorable.
+
+Yes, it's ironic. Yes, it's inspired by internet culture. But also — it works.
+
+
+Commands are structured like sentences. Each word is a layer of meaning:
+
+- **`all`** — The root of everything. This bootstraps the command grammar and resolves modules.
+- **`my`** — User-focused commands: uptime, shell access, browser launching.
+- **`homies`** — Extended utility layer. These are your tools, integrations, and contacts.
+- **`hate`** — The "adapter" that simplifies complexity: it makes things like JSON parsing or Windows telemetry easy to talk to.
+- **`windows`** — Everything Windows-related: telemetry, cleanup, versioning.
+- **`json`** — A power-tool for working with structured data interactively.
+
+You get a grammar tree like:
+
+```powershell
+all my homies hate json tree
+```
+Which breaks down into:
+- `all` — core
+- `my` — personal context
+- `homies` — utility toolkit
+- `hate` — adapter for simplified interaction
+- `json` — specific module (with `view`, `tree`, `table`, etc.)
+
+This isn't just clever naming—it makes discoverability and chaining commands intuitive.
+The point is to create a grammar-like syntax that is easy to remember and easy to use.
+
+---
 
 ## 🧱 Architecture
 

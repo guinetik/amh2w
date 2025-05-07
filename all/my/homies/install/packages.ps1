@@ -1,4 +1,41 @@
-﻿function Install-Scoop {
+﻿function packages {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateSet('scoop', 'choco', 'winget')]
+        [string]$Flavour,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string]$InstallLocation,
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [string]$ToolsLocation,
+
+        [Parameter(Mandatory = $false, Position = 3)]
+        [object]$Force,
+        
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [object[]]$Arguments
+    )
+
+    $Force = Truthy $Force
+
+    $result = switch ($Flavour) {
+        'scoop' { 
+            Install-Scoop -Force:$Force -ScoopInstall $InstallLocation
+        }
+        'choco' { 
+            Install-Chocolatey -Force:$Force -ChocolateyInstall $InstallLocation -ChocolateyToolsLocation $ToolsLocation
+        }
+        'winget' { 
+            Install-Winget -Force:$Force
+        }
+    }
+
+    return $result
+}
+
+function Install-Scoop {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
@@ -115,41 +152,4 @@ function Install-Winget {
     else {
         return Err -Message "Winget is not available. Please ensure you're running Windows 10 version 1809 or later"
     }
-}
-
-function packages {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateSet('scoop', 'choco', 'winget')]
-        [string]$Flavour,
-
-        [Parameter(Mandatory = $false, Position = 1)]
-        [string]$InstallLocation,
-
-        [Parameter(Mandatory = $false, Position = 2)]
-        [string]$ToolsLocation,
-
-        [Parameter(Mandatory = $false, Position = 3)]
-        [object]$Force,
-        
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [object[]]$Arguments
-    )
-
-    $Force = Truthy $Force
-
-    $result = switch ($Flavour) {
-        'scoop' { 
-            Install-Scoop -Force:$Force -ScoopInstall $InstallLocation
-        }
-        'choco' { 
-            Install-Chocolatey -Force:$Force -ChocolateyInstall $InstallLocation -ChocolateyToolsLocation $ToolsLocation
-        }
-        'winget' { 
-            Install-Winget -Force:$Force
-        }
-    }
-
-    return $result
 }

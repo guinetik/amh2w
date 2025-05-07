@@ -7,12 +7,12 @@
     }
     else {
         try {
-            Write-Host "📊 Disabling telemetry via Group Policies"
+            Write-Host "📊 Disabling telemetry via Group Policies" -ForegroundColor Cyan
             New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Force -ErrorAction SilentlyContinue | Out-Null
             Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Type DWord -Value 0
             # Entries related to Akamai have been reported to cause issues with Widevine
             # DRM.
-            Write-Host "Adding telemetry domains to hosts file"
+            Write-Host "🛜 Adding telemetry domains to hosts file" -ForegroundColor Cyan
             $hosts_file = "$env:systemroot\System32\drivers\etc\hosts"
             $domains = @(
                 "184-86-53-99.deploy.static.akamaitechnologies.com"
@@ -198,7 +198,7 @@
                 }
             }
         
-            Write-Host "Adding telemetry ips to firewall"
+            Write-Host "🧱 Adding telemetry ips to firewall" -ForegroundColor Cyan
             $ips = @(
                 "134.170.30.202"
                 "137.116.81.24"
@@ -218,6 +218,7 @@
                 -Action Block -RemoteAddress ([string[]]$ips)
         
             # Registry telemetry settings
+            Write-Host "📄 Registry telemetry settings" -ForegroundColor Cyan
             $telemetryKeys = @(
                 "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection",
                 "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection",
@@ -261,6 +262,8 @@
                 @{ Path = "\Microsoft\Office\"; Name = "OfficeTelemetryAgentFallBack2016" },
                 @{ Path = "\Microsoft\Office\"; Name = "OfficeTelemetryAgentLogOn2016" }
             )
+
+            Write-Host "🔄 Disabling scheduled Telemetry tasks" -ForegroundColor Cyan
         
             foreach ($task in $tasks) {
                 try {

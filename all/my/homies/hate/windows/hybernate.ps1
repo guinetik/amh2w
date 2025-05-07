@@ -5,9 +5,8 @@
         Write-Host "It's $CurrentTime, going to sleep now... 😴💤"
         Start-Sleep -milliseconds 500
         & rundll32.exe powrprof.dll,SetSuspendState 1,1,0 # bHibernate,bForce,bWakeupEventsDisabled
-        exit 0 # success
+        return Ok
     } catch {
-        "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
-        exit 1
+        return Err "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
     }
 }

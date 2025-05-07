@@ -170,3 +170,40 @@ function Invoke-Powershell {
     Log-Info "Executing $Command with $executable"
     Start-Process $executable -ArgumentList $Arguments
 }
+
+function registry {
+    param([string]$Path)
+    if (-not (Test-Path $Path)) {
+        New-Item -Path $Path -Force | Out-Null
+    }
+}
+
+function Set-RegistryValues {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Path,
+
+        [Parameter(Mandatory=$true)]
+        [hashtable]$PropertyValues,
+
+        [switch]$EnsurePath
+    )
+
+    if ($EnsurePath.IsPresent) {
+        registry $Path
+    }
+
+    foreach ($name in $PropertyValues.Keys) {
+        $item = $PropertyValues[$name]
+        if ($item -is [hashtable] -and $item.ContainsKey('Value')) {
+            if ($item.ContainsKey('Type')) {
+                Set-ItemProperty -Path $Path -Name $name -Value $item.Value -Type $item.Type -ErrorAction Stop
+            } else {
+                 Set-ItemProperty -Path $Path -Name $name -Value $item.Value -ErrorAction Stop
+            }
+        } else {
+            Set-ItemProperty -Path $Path -Name $name -Value $item -ErrorAction Stop
+        }
+    }
+}

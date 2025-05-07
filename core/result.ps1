@@ -7,8 +7,8 @@ function Ok {
 }
 
 function Err {
-    param($Message)
-    return @{ ok = $false; error = $Message }
+    param($Message, $Stack)
+    return @{ ok = $false; error = $Message; stack = $Stack }
 }
 
 <#
