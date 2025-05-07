@@ -105,7 +105,7 @@ function Write-CHANGELOG {
         Log-Info "(2/6) Checking local repository..."
         if (!(Test-Path "$RepoDir" -pathType container)) { throw "Can't access folder: $RepoDir" }
         $RepoDirName = (Get-Item "$RepoDir").Name
-
+        Write-Host "RepoDir: $RepoDir"
         Log-Info "(3/6) Fetching the latest commits..."
         & git -C "$RepoDir" fetch --all --force --quiet
         if ($lastExitCode -ne 0) { throw "'git fetch --all' failed with exit code $lastExitCode" }
@@ -193,7 +193,7 @@ function Write-CHANGELOG {
                 if ($categorized[$cat].Count) {
                     Write-Host "`n$($categoryEmojis[$cat])`n"
                     foreach ($c in $categorized[$cat]) { Write-Host ("{0} | {1}" -f $c.Date, $c.Subject) }
-                    Print-HR -LeftMargin 0 -RightMargin 0 -Char "-"
+                    Write-HR -LeftMargin 0 -RightMargin 0 -Char "-"
                 }
             }
             Write-Host ""
@@ -306,7 +306,7 @@ function Get-SelectionFromUser {
     return $Options.Get($Response - 1)
 }
 
-function Print-HR {
+function Write-HR {
     param(
         [int]$LeftMargin = 0,
         [int]$RightMargin = 0,
@@ -320,7 +320,7 @@ function Print-HR {
     Write-Host ("$marginLeft" + ($Char * $lineLength) + "$marginRight")
 }
 
-function Ellipsize-Text {
+function Write-Text-Elipsis {
     param (
         [string]$text,
         [int]$maxLength,
@@ -374,10 +374,10 @@ function Write-SuspenseText {
         [int]$RevealSteps = 5, # How many iterations before a character settles
         
         [Parameter(Mandatory = $false)]
-        [switch]$PreserveSpaces = $true,
+        [switch]$PreserveSpaces,
         
         [Parameter(Mandatory = $false)]
-        [switch]$PreservePunctuation = $true,
+        [switch]$PreservePunctuation,
         
         [Parameter(Mandatory = $false)]
         [switch]$RevealSequentially = $false,
