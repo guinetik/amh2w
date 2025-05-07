@@ -50,5 +50,3 @@ Write-Host "Encoding conversion complete:" -ForegroundColor Green
 Write-Host "  - Files converted: $convertedCount" -ForegroundColor White
 Write-Host "  - Files already correct: $alreadyCorrectCount" -ForegroundColor White
 Write-Host "  - Errors: $errorCount" -ForegroundColor $(if ($errorCount -gt 0) { "Red" } else { "White" })
-Write-Host ""
-Write-Host "You should now be able to run the installation script without encoding issues." -ForegroundColor Cyan

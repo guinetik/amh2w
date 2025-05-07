@@ -1,5 +1,5 @@
 ﻿# AMH2W.psm1 — Module Entry Point
-# All My Homies Handle Windows - PowerShell utility library
+# All My Homies Hate Windows - PowerShell utility library
 
 # Set the module root in an environment variable
 $script:ModuleRoot = $PSScriptRoot

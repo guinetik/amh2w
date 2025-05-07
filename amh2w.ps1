@@ -27,7 +27,7 @@ Write-Host "Running $($installScript.FullName)..."
 Start-Process pwsh -ArgumentList "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $installScript.FullName -Wait
 
 # Optional: Clean up
-type $zipPath | Out-Null  # Ensure file is not locked
+Get-Content $zipPath | Out-Null  # Ensure file is not locked
 Remove-Item -Recurse -Force $tempDir
 
 Write-Host "Done."
