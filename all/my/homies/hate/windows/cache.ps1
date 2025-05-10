@@ -1,4 +1,17 @@
-﻿function cache {
+﻿<#
+.SYNOPSIS
+    Clears various Windows cache and temporary files to free up space and improve performance.
+.DESCRIPTION
+    Removes Windows Prefetch, system temp, user temp, and Internet Explorer cache files. Elevates to administrator if needed. Logs actions and errors.
+.PARAMETER Arguments
+    Additional arguments (currently unused, reserved for future options).
+.EXAMPLE
+    cache
+    # Clears Windows and user cache/temp files. Prompts for elevation if not run as administrator.
+.OUTPUTS
+    Ok object with success message, or Err object with error details.
+#>
+function cache {
     [CmdletBinding()]
     param(
         [Parameter(ValueFromRemainingArguments = $true)]
