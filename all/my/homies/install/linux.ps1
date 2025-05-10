@@ -35,7 +35,7 @@
                 $feature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
                 if ($feature.State -ne "Enabled") {
                     Log-Info "WSL is not enabled. Enabling now..."
-                    all my config enable_wsl
+                    all my config wslconfig enable
                 }
                 else {
                     Log-Info "WSL already enabled."
