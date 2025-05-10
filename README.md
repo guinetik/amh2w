@@ -561,6 +561,22 @@ all my homies hate windows hibernation         # Trigger hibernation
 all my homies hate windows godmode             # Create God Mode folder on desktop
 ```
 
+#### 🛰️ Telnet Client Management
+
+Easily enable, disable, or check the status of the Windows Telnet Client feature:
+
+```powershell
+all my homies hate windows telnetc enable   # Enables the Windows Telnet Client
+all my homies hate windows telnetc disable  # Disables the Windows Telnet Client
+all my homies hate windows telnetc status   # Shows if the Telnet Client is enabled or disabled
+```
+
+Features:
+- Elevates automatically if not run as administrator
+- Enables or disables the Windows Telnet Client feature
+- Checks and displays the current status
+- Friendly output and error handling
+
 ### 🔒 Privacy & Security
 ```powershell
 all my homies hate windows privacy              # Apply privacy hardening
