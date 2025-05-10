@@ -1,4 +1,24 @@
-﻿function wslconfig {
+﻿<#
+.SYNOPSIS
+    Unified WSL management utility for common WSL tasks (location, install, backup, resize, export, import, list, enable).
+.DESCRIPTION
+    Provides a single entry point for managing WSL distros, including installation, backup, resizing, export/import, listing, and enabling WSL features. Wraps helper functions for each action.
+.PARAMETER Action
+    The action to perform. One of: location, install, backup, resize, export, import, list, enable.
+.PARAMETER Distro
+    The name of the WSL distro to operate on (default: Ubuntu). For import, this is the new distro name.
+.PARAMETER Arguments
+    Additional arguments for the action (e.g., backup path, size, etc.).
+.EXAMPLE
+    wslconfig -Action install -Distro Ubuntu
+    # Installs the Ubuntu WSL distro.
+.EXAMPLE
+    wslconfig -Action backup -Distro Ubuntu -Arguments 'C:\backups\ubuntu-backup.tar'
+    # Backs up Ubuntu to the specified path.
+.OUTPUTS
+    Returns Ok/Err objects or writes output to the host.
+#>
+function wslconfig {
     [CmdletBinding(DefaultParameterSetName='Named', SupportsShouldProcess=$true)]
     param(
         [Parameter(Mandatory=$true, Position=0)]
@@ -69,6 +89,17 @@
     }
 }
 
+<#
+.SYNOPSIS
+    Lists all installed and available WSL distros and status.
+.DESCRIPTION
+    Shows verbose and online WSL distros, and current WSL status using wsl.exe.
+.EXAMPLE
+    Show-WslDistros
+    # Lists all WSL distros and status.
+.OUTPUTS
+    Ok/Err object, writes to host.
+#>
 function Show-WslDistros {
     try {
         Write-Host "🔍 Listing WSL distros..." -ForegroundColor Cyan
@@ -84,6 +115,19 @@ function Show-WslDistros {
     }
 }
 
+<#
+.SYNOPSIS
+    Gets the VHDX (virtual disk) path for a given WSL distro.
+.DESCRIPTION
+    Looks up the registry for the specified distro and returns the path to its ext4.vhdx file.
+.PARAMETER Distro
+    The name of the WSL distro.
+.EXAMPLE
+    Get-VhdxPath -Distro Ubuntu
+    # Returns the VHDX path for Ubuntu.
+.OUTPUTS
+    Ok/Err object with the VHDX path or error message.
+#>
 function Get-VhdxPath {
     param([string]$Distro)
 
@@ -99,6 +143,19 @@ function Get-VhdxPath {
     }
 }
 
+<#
+.SYNOPSIS
+    Installs a WSL distro (default Ubuntu if none specified).
+.DESCRIPTION
+    Installs the specified WSL distro using a custom install command.
+.PARAMETER Distro
+    The name of the WSL distro to install.
+.EXAMPLE
+    Install-WslDistro -Distro Ubuntu
+    # Installs Ubuntu.
+.OUTPUTS
+    Ok/Err object or writes to host.
+#>
 function Install-WslDistro {
     <#
     .SYNOPSIS
@@ -123,6 +180,21 @@ function Install-WslDistro {
     }
 }
 
+<#
+.SYNOPSIS
+    Backs up a WSL distro to a .tar file.
+.DESCRIPTION
+    Exports the specified WSL distro to a tar archive for backup purposes.
+.PARAMETER Distro
+    The name of the WSL distro to back up.
+.PARAMETER BackupPath
+    The file path to save the backup tar file.
+.EXAMPLE
+    Backup-WslDistro -Distro Ubuntu -BackupPath 'C:\backups\ubuntu-backup.tar'
+    # Backs up Ubuntu to the specified path.
+.OUTPUTS
+    Ok/Err object or writes to host.
+#>
 function Backup-WslDistro {
     <#
     .SYNOPSIS
@@ -150,6 +222,21 @@ function Backup-WslDistro {
     }
 }
 
+<#
+.SYNOPSIS
+    Resizes a WSL 2 distro's virtual disk (ext4.vhdx).
+.DESCRIPTION
+    Changes the size of the specified WSL distro's virtual disk. Supports size suffixes B/M/MB/G/GB/T/TB.
+.PARAMETER Distro
+    The name of the WSL distro to resize.
+.PARAMETER Size
+    The new size for the virtual disk (e.g., 50GB).
+.EXAMPLE
+    Resize-WslDisk -Distro Ubuntu -Size 50GB
+    # Resizes Ubuntu's disk to 50GB.
+.OUTPUTS
+    Ok/Err object or writes to host.
+#>
 function Resize-WslDisk {
     <#
     .SYNOPSIS
@@ -178,6 +265,21 @@ function Resize-WslDisk {
     }
 }
 
+<#
+.SYNOPSIS
+    Exports a WSL distro to a .tar file (same as Backup-WslDistro).
+.DESCRIPTION
+    Exports the specified WSL distro to a tar archive for migration or backup.
+.PARAMETER Distro
+    The name of the WSL distro to export.
+.PARAMETER ExportPath
+    The file path to save the exported tar file.
+.EXAMPLE
+    Export-WslDistro -Distro Ubuntu -ExportPath 'C:\backups\ubuntu-export.tar'
+    # Exports Ubuntu to the specified path.
+.OUTPUTS
+    Ok/Err object or writes to host.
+#>
 function Export-WslDistro {
     <#
     .SYNOPSIS
@@ -197,6 +299,23 @@ function Export-WslDistro {
     Backup-WslDistro -Distro $Distro -BackupPath $ExportPath
 }
 
+<#
+.SYNOPSIS
+    Imports a WSL distro from a .tar file to a custom location.
+.DESCRIPTION
+    Imports a WSL distro from a tar archive to a specified install path, creating a new distro name.
+.PARAMETER DistroName
+    The name for the new WSL distro.
+.PARAMETER InstallPath
+    The directory to install the new WSL distro.
+.PARAMETER ImportFile
+    The path to the tar file to import.
+.EXAMPLE
+    Import-WslDistro -DistroName Ubuntu-Custom -InstallPath 'C:\wsl\custom-ubuntu' -ImportFile 'C:\backups\ubuntu-backup.tar'
+    # Imports a new Ubuntu-Custom distro from the backup.
+.OUTPUTS
+    Ok/Err object or writes to host.
+#>
 function Import-WslDistro {
     <#
     .SYNOPSIS
@@ -228,6 +347,17 @@ function Import-WslDistro {
     }
 }
 
+<#
+.SYNOPSIS
+    Enables WSL and VirtualMachinePlatform features on Windows.
+.DESCRIPTION
+    Ensures the required Windows features for WSL are enabled, elevating if necessary.
+.EXAMPLE
+    Enable-Wsl
+    # Enables WSL and VirtualMachinePlatform features.
+.OUTPUTS
+    Ok/Err object or writes to host.
+#>
 function Enable-Wsl {
     [CmdletBinding()]
     param()

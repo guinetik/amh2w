@@ -256,6 +256,7 @@ all my config updatepackages        # Update all installed packages
 ```
 
 ### 🐧 Linux & Development
+
 ```powershell
 all my config myshell            # Install PowerShell Core + Plugins from the Gallery. Configure Profile.
 all my config gitconfig          # Configure Git username and email, sets up aliases and default configs.
@@ -266,6 +267,28 @@ all my homies install distro     # Install specific WSL distro
 all my homies install nvchad     # Install NvChad (Neovim config)
 all my homies install jabba      # Install Java version manager
 ```
+
+#### 🐧 WSL Management
+
+AMH2W provides comprehensive tools for managing Windows Subsystem for Linux (WSL) distros:
+
+```powershell
+all my config wslconfig location [Distro]           # Show the VHDX path for a distro
+all my config wslconfig install [Distro]            # Install a WSL distro (default: Ubuntu)
+all my config wslconfig backup [Distro] <Path>      # Backup a distro to a .tar file
+all my config wslconfig resize [Distro] <Size>      # Resize a distro's virtual disk (e.g., 50GB)
+all my config wslconfig export [Distro] <Path>      # Export a distro to a .tar file
+all my config wslconfig import <Name> <Path> <Tar>  # Import a new distro from a .tar file
+all my config wslconfig list                        # List installed and available distros
+all my config wslconfig enable                      # Enable WSL and required features
+```
+
+Features:
+- Install, backup, export, import, and resize WSL distros
+- List installed and available distros
+- Enable WSL and VirtualMachinePlatform features
+- Friendly error handling and status messages
+- Very useful for backup and restore of WSL distros for when you format your system for example.
 
 ### 🔤 Nerd Fonts
 ```powershell
