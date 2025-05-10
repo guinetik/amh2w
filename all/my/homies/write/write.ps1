@@ -1,8 +1,8 @@
-﻿function luv {
+﻿function write {
     [CmdletBinding()]
     param(
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-    return namespace "wrk" "all my homies wrk" 
+    return namespace "write" "all my homies write" 
 }
