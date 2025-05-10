@@ -135,7 +135,7 @@
             }
             # Print description
             if ($headline.Description -and $headline.Description -ne "No description available") {
-                $gravatinha = Ellipsize-Text $headline.Description (($width * 2) + $width / 2)
+                $gravatinha = Write-Text-Elipsis $headline.Description (($width * 2) + $width / 2)
                 Write-Host "📝  " -NoNewline
                 Write-Host $gravatinha -ForegroundColor White
             }
