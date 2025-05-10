@@ -1,4 +1,23 @@
-﻿function telnetc {
+﻿<#
+.SYNOPSIS
+    Manage the Windows Telnet Client feature (enable, disable, check status).
+.DESCRIPTION
+    Enables, disables, or checks the status of the Windows Telnet Client feature. Elevates if not running as administrator.
+.PARAMETER Action
+    The action to perform: 'enable', 'disable', 'status', or 'help'. Default is 'help'.
+.EXAMPLE
+    telnetc enable
+    # Enables the Windows Telnet Client feature.
+.EXAMPLE
+    telnetc disable
+    # Disables the Windows Telnet Client feature.
+.EXAMPLE
+    telnetc status
+    # Checks if the Windows Telnet Client is enabled or disabled.
+.OUTPUTS
+    Ok object with status or result message.
+#>
+function telnetc {
     param (
         [string]$Action="help"
     )
@@ -9,7 +28,8 @@
     if ($Action -eq "status") {
         Write-Host "🔍 Checking Telnet Client status..." -ForegroundColor Cyan
         $Results = Get-WindowsOptionalFeature -Online -FeatureName TelnetClient
-        $Status = $Results.State -eq "Enabled" ? "Enabled" : "Disabled"
+        $Status = @{"Enabled"="Enabled"; "Disabled"="Disabled"}[$Results.State] 
+        if (-not $Status) { $Status = "Disabled" }
         Write-Host "📡 Telnet Client status:" $Status -ForegroundColor Cyan
         return Ok $Status - Message "Telnet Client is $Status"
     }
