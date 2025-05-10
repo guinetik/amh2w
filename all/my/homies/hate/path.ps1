@@ -50,15 +50,20 @@ function Set-PathEntry {
     $reg = if ($Scope -eq "User") { "HKCU:\Environment" } else { "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" }
     $path = (Get-ItemProperty -Path $reg -Name Path -ErrorAction SilentlyContinue).Path
     $parts = ($path -split ";") -ne ""
-    $newPath = if ($Remove) {
-        ($parts | Where-Object { $_ -ne $Value }) -join ";"
+    if ($Remove) {
+        if ($parts -notcontains $Value) {
+            return "$Value not found in $Scope PATH"
+        }
+        $newPath = ($parts | Where-Object { $_ -ne $Value }) -join ";"
+        Set-ItemProperty -Path $reg -Name Path -Value $newPath
+        return "$Value removed from $Scope PATH"
     } elseif ($parts -contains $Value) {
         return "$Value already in $Scope PATH"
     } else {
-        ($parts + $Value) -join ";"
+        $newPath = ($parts + $Value) -join ";"
+        Set-ItemProperty -Path $reg -Name Path -Value $newPath
+        return "$Scope PATH updated"
     }
-    Set-ItemProperty -Path $reg -Name Path -Value $newPath
-    return "$Scope PATH updated"
 }
 
 function Add-EnvVar {
