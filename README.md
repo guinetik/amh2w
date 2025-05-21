@@ -201,6 +201,31 @@ all my hardware ram               # Display RAM information
 all my hardware power             # Show power/battery status
 ```
 
+#### 🎮 Hardware Profiling & Stress Testing
+```powershell
+all my hardware profiler         # Run comprehensive hardware stress tests
+```
+
+Features:
+- **RAM Test**:
+  - Uses TestLimit for memory stress testing
+  - Runs configurable test cycles
+  - Measures memory usage and cleanup
+  - Provides detailed metrics per cycle
+
+- **CPU Test**:
+  - Multi-core stress testing
+  - Matrix multiplication and prime number calculations
+  - Temperature monitoring
+  - Performance scoring and thermal analysis
+
+- **GPU Test**:
+  - FurMark-based stress testing
+  - VRAM stress test (configurable size)
+  - Full benchmark with FPS analysis
+  - Temperature and stability monitoring
+  - Detailed performance metrics and recommendations
+
 #### 💾 Storage & Devices
 ```powershell
 all my hardware power             # Display power report
