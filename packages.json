@@ -80,10 +80,10 @@
       "command": "choco install python -y"
     },
     {
-      "name": "vs-buildtools",
-      "description": "Install Visual Studio 2022 Build Tools",
-      "command": "winget install --id=Microsoft.VisualStudio.2022.BuildTools -e"
-    }
+	  "name": "vs-buildtools",
+	  "description": "Install Visual Studio 2022 Build Tools with custom location",
+	  "command": "winget install --id=Microsoft.VisualStudio.2022.BuildTools -e --override \"--installPath D:\\VS2022\\BuildTools --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --passive\""
+	}
   ],
   "terminal": [
     {
