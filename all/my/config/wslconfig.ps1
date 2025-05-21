@@ -73,10 +73,10 @@ function wslconfig {
             # For import, $Distro is the NewDistroName
             $params = @{ DistroName = $Distro }
             if ($Arguments.Count -ge 1) { $params['InstallPath'] = $Arguments[0] }
-            if ($Arguments.Count -ge 2) { $params['TarPath'] = $Arguments[1] }
-             if ($PSCmdlet.ShouldProcess("$($params.TarPath) to $Distro at $($params.InstallPath)", "Import")) {
-                 Import-WslDistro @params
-             }
+            if ($Arguments.Count -ge 2) { $params['ImportFile'] = $Arguments[1] }
+            if ($PSCmdlet.ShouldProcess("$($params.ImportFile) to $Distro at $($params.InstallPath)", "Import")) {
+                Import-WslDistro @params
+            }
         }
         "list" {
             # No extra args expected
