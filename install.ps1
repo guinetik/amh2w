@@ -22,7 +22,7 @@ if (-not (Test-Path $coreFolder)) {
     New-Item -ItemType Directory -Path $coreFolder -Force | Out-Null
 }
 
-# Copy core files
+# Copy core files (only PS1 files in core)
 Get-ChildItem -Path "$ScriptPath\core" -Filter "*.ps1" | ForEach-Object {
     $destFile = Join-Path $coreFolder $_.Name
     Copy-Item -Path $_.FullName -Destination $destFile -Force
@@ -42,17 +42,22 @@ Get-ChildItem -Path "$ScriptPath\all" -Directory -Recurse | ForEach-Object {
     
     if (-not (Test-Path $targetPath)) {
         New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
-        Write-Host "  Created folder: $targetPath" -ForegroundColor DarkGray
     }
 }
 
-# Copy all PS1 files
-Get-ChildItem -Path "$ScriptPath\all" -Filter "*.ps1" -Recurse | ForEach-Object {
+# Copy all files (not just PS1) from the all/ directory
+Get-ChildItem -Path "$ScriptPath\all" -File -Recurse | ForEach-Object {
     $relativePath = $_.FullName.Substring("$ScriptPath\all".Length)
     $targetFile = Join-Path $allFolder $relativePath
     
     Copy-Item -Path $_.FullName -Destination $targetFile -Force
-    Write-Host "  Copied command file: $relativePath" -ForegroundColor DarkGray
+    
+    # Show different messages based on file type
+    if ($_.Extension -eq ".ps1") {
+        Write-Host "  Copied command file: $relativePath" -ForegroundColor DarkGray
+    } else {
+        Write-Host "  Copied resource file: $relativePath" -ForegroundColor DarkCyan
+    }
 }
 
 # Copy module entrypoint
