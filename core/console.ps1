@@ -100,18 +100,31 @@ function Write-CHANGELOG {
 
         Log-Info "(1/6) Searching for Git executable..."
         $null = (git --version)
-        if ($lastExitCode -ne 0) { throw "Can't execute 'git' - make sure Git is installed and available" }
+        if ($lastExitCode -ne 0) { 
+            return Err "Can't execute 'git' - make sure Git is installed and available"
+        }
 
         Log-Info "(2/6) Checking local repository..."
-        if (!(Test-Path "$RepoDir" -pathType container)) { throw "Can't access folder: $RepoDir" }
+        if (!(Test-Path "$RepoDir" -pathType container)) { 
+            return Err "Can't access folder: $RepoDir"
+        }
         $RepoDirName = (Get-Item "$RepoDir").Name
         Write-Host "RepoDir: $RepoDir"
+        
         Log-Info "(3/6) Fetching the latest commits..."
-        & git -C "$RepoDir" fetch --all --force --quiet
-        if ($lastExitCode -ne 0) { throw "'git fetch --all' failed with exit code $lastExitCode" }
+        # Try to fetch, but don't fail if it doesn't work (might be SSH issues)
+        $fetchOutput = & git -C "$RepoDir" fetch --all --force --quiet 2>&1
+        if ($lastExitCode -ne 0) { 
+            Log-Warning "Git fetch failed (exit code $lastExitCode), continuing with local commits only. Error: $fetchOutput"
+            # Don't return an error here, just continue with local data
+        }
 
         Log-Info "(4/6) Listing all Git commit messages with dates and tags..."
         $commitLines = git -C "$RepoDir" log --pretty=format:"%ad|%s|%D" --date=short
+        if ($lastExitCode -ne 0) {
+            return Err "Failed to get git log. Make sure you're in a valid git repository."
+        }
+        
         $commits = @()
         foreach ($line in $commitLines) {
             $parts = $line -split '\|', 3
@@ -202,11 +215,11 @@ function Write-CHANGELOG {
         Write-Host ""
         Write-Host "---"
         Write-Host "Changelog as of $Today."
-        exit 0 # success
+        
+        return Ok "Changelog generated successfully"
     }
     catch {
-        Write-Error $_.Exception.ToString()
-        exit 1
+        return Err "Failed to generate changelog: $($_.Exception.Message)"
     }
 }
 

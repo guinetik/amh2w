@@ -1,4 +1,4 @@
-# pack.ps1
+﻿# pack.ps1
 # Creates a distribution package for AMH2W module
 
 [CmdletBinding()]

@@ -1,15 +1,17 @@
-# CHANGELOG
-
-## 1.0.0
+## 1.0.1
 
 ### 🏭 Added
 
+- 2025-05-24 | Adds new pack script to create release packages
+- 2025-05-24 | Adds new overhauled shell config with optional features and starship config
+- 2025-05-21 | Adds new profiler script
 - 2025-05-10 | Adds documentation and improves wslconfig command
-- 2025-05-10 | Adds new ll my homies write changelog to write current git changelog
+- 2025-05-10 | Adds new all my homies write changelog to write current git changelog
 
 
 ### 💡 Fixed
 
+- 2025-05-21 | Fixes in wslconfig import/export scripts
 - 2025-05-10 | Fix an issue on rss feed display message
 - 2025-05-10 | Fixed and documented the ll my homies hate windows cache command
 - 2025-05-10 | Fix and issue on telnet client and documented the script
@@ -19,11 +21,15 @@
 
 ### 🖌️ Various
 
+- 2025-05-24 | Install script now adds static config files
+- 2025-05-21 | Updates readme with profiler info
+- 2025-05-21 | updates packages.json with correct packages
+- 2025-05-10 | update changelog
 - 2025-05-10 | Updates readme
 
 
 
-## 1.0.0-rc
+## 1.0.0
 
 ### 🏭 Added
 
@@ -130,4 +136,4 @@
 
 
 ---
-Changelog as of 5/10/2025.
+Changelog as of 5/24/2025.
