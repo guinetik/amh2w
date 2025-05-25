@@ -143,7 +143,6 @@
             if ($link) { Write-Host ("🔗  " + $link) -ForegroundColor DarkBlue }
             # Blank line between headlines
             Write-Host ""
-            Print-HR
             # Add sanitized object to array
             $result += [PSCustomObject]@{
                 Date        = $date
