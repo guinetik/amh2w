@@ -106,6 +106,47 @@ all my homies hate windows version  # Show Windows version info
 ```
 ---
 
+## 🧮 Mathematical & Programming Utilities
+
+AMH2W includes various mathematical and programming utilities in the root `all` namespace:
+
+### 🔢 Number Theory & Sequences
+```powershell
+all factor 123456                   # Prime factorization of a number
+all fibo 10                         # Generate first 10 Fibonacci numbers
+all primes 100                      # Generate prime numbers up to 100
+all pi 1000                         # Calculate π to specified precision
+all numbers                         # Number conversion utilities
+```
+
+### 🎯 Programming Challenges
+```powershell
+all fizbuss 100                     # Classic FizzBuzz implementation (1-100)
+all anagrams "hello"                # Generate all anagrams of a word
+```
+
+### 📊 Visual & Animation
+```powershell
+all sine                            # Animated sine wave in terminal
+all fractals                        # Animated Julia set fractal display
+```
+
+### 📰 News & Information
+```powershell
+all news brazil                     # Latest news from Brazil (G1)
+all news world                      # World news from Yahoo
+all weather                         # Current weather information
+all time                            # Time utilities and world clocks
+```
+
+Features:
+- **Mathematical Functions**: Prime factorization, Fibonacci sequences, prime generation
+- **Programming Exercises**: FizzBuzz, anagram generation, number theory
+- **Visual Effects**: Animated sine waves and fractal displays
+- **Information Services**: News feeds, weather, and time utilities
+
+---
+
 ## 🧑 Personal Tools
 
 AMH2W provides personal productivity and system management tools:
@@ -350,6 +391,63 @@ Features:
 
 ---
 
+### 🛠️ Additional Utilities
+
+AMH2W provides additional utility tools for everyday tasks:
+
+#### 📱 QR Code Generator
+```powershell
+# Generate QR code for text
+all my homies qrcode "Hello World"
+
+# Generate QR code with custom settings
+all my homies qrcode "https://example.com" "800x800" "my_qr" "png"
+```
+
+Features:
+- Generates QR codes from any text or URL
+- Customizable image size and format
+- Saves to Pictures folder automatically
+- Shows ASCII preview in terminal
+- Supports multiple output formats (JPG, PNG, etc.)
+
+#### 🌍 Translation Service
+```powershell
+# Translate to all supported languages
+all my homies translate "Hello World"
+
+# Translate to specific language
+all my homies translate "Hello World" "es"  # Spanish
+all my homies translate "Hello World" "fr"  # French
+all my homies translate "Hello World" "pt"  # Portuguese
+```
+
+Features:
+- Supports 12+ languages with flag emojis
+- Uses Google Translate API
+- Batch translation to multiple languages
+- Interactive table display of results
+- Automatic language detection
+
+#### 📦 Bootstrap Installer
+```powershell
+# Install packages from JSON configuration
+all my homies bootstrap
+
+# Install packages without prompts
+all my homies bootstrap -Yolo
+
+# Use custom package file
+all my homies bootstrap "custom-packages.json"
+```
+
+Features:
+- Installs software packages from JSON configuration
+- Interactive or automated installation modes
+- Requires Chocolatey package manager
+- Categorized package organization
+- Progress tracking and error handling
+
 ### 🖼️ Image Conversion
 
 Convert images between formats and resize them with ease.
@@ -396,7 +494,14 @@ all my homies convert img folder/ jpg -Recursive
 - Preserves or strips metadata
 - Supports all common image formats
 
-## 🔐 Cryptographic Tools
+#### Technical Notes
+
+- Uses .NET System.Drawing for image processing
+- Automatically calculates height to maintain aspect ratio
+- Converts to grayscale by averaging RGB values
+- Maps brightness values to ASCII characters
+
+### 🔐 Cryptographic Tools
 
 AMH2W provides cryptographic and security utilities:
 
@@ -690,6 +795,67 @@ all my homies luv ascii "./icon.gif" -Width 60 -Invert
 - Automatically calculates height to maintain aspect ratio
 - Converts to grayscale by averaging RGB values
 - Maps brightness values to ASCII characters
+
+### 🎬 Terminal Animations
+
+#### The Matrix Effect
+```powershell
+# Start the classic Matrix digital rain animation
+all my homies luv thematrix
+```
+
+Features:
+- Full-screen Matrix-style digital rain effect
+- Green text on black background
+- Infinite loop animation (press Ctrl+C to stop)
+- Uses the word "MATRIX" as the falling characters
+- Adapts to your terminal window size
+
+### 🛰️ International Space Station Tracker
+
+Track the ISS in real-time with detailed information and crew data:
+
+#### Usage
+```powershell
+# Get current ISS position
+all my homies luv iss position
+
+# Track ISS in real-time with updates every 5 seconds
+all my homies luv iss track
+
+# Get current crew information
+all my homies luv iss crew
+
+# Get upcoming ISS passes over your location
+all my homies luv iss pass
+
+# Show ISS on a world map
+all my homies luv iss map
+
+# Get help
+all my homies luv iss help
+```
+
+#### Features
+- **Real-time Position**: Live latitude/longitude coordinates
+- **Location Names**: Reverse geocoding to show what country/region the ISS is over
+- **Crew Information**: Current astronauts aboard the ISS
+- **Pass Predictions**: When the ISS will be visible from your location
+- **Visual Tracking**: ASCII world map showing ISS position relative to your location
+- **Caching**: Smart caching for offline functionality
+- **Auto-location**: Uses your IP to determine your location automatically
+
+#### Examples
+```powershell
+# Basic position check
+all my homies luv iss position
+
+# Track with custom update interval (10 seconds)
+all my homies luv iss track -UpdateInterval 10
+
+# Use specific location coordinates
+all my homies luv iss track -Location "40.7128,-74.0060"  # New York City
+```
 
 --- 
 
