@@ -207,7 +207,6 @@ function Optimize-Services {
         $servicesToDisable = @(
             @{Name = "SysMain"; DisplayName = "Superfetch/SysMain"; Description = "Prefetches files but can cause high disk usage"},
             @{Name = "DiagTrack"; DisplayName = "Connected User Experiences and Telemetry"; Description = "Telemetry service that sends data to Microsoft"},
-            @{Name = "WSearch"; DisplayName = "Windows Search"; Description = "Indexes files for search but can cause high disk/CPU usage"}
         )
         
         # Define services to set to manual
